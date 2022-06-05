@@ -1,0 +1,43 @@
+{
+  "name": "vite-plugin-cjs-interop",
+  "version": "0.0.0-TODO",
+  "type": "module",
+  "files": [
+    "dist",
+    "*.d.ts"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepack": "rm -rf dist && pnpm build",
+    "test": "pnpm test:typecheck && pnpm test:lint && pnpm test:unit && pnpm test:package",
+    "test:unit": "vitest run",
+    "test:typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:lint": "eslint . --max-warnings 0 --ignore-pattern dist",
+    "test:package": "publint"
+  },
+  "description": "TODO",
+  "license": "MIT",
+  "repository": "https://github.com/TODO/TODO",
+  "keywords": [
+    "react",
+    "vite",
+    "nextjs",
+    "ssr"
+  ],
+  "devDependencies": {
+    "@cyco130/eslint-config": "^2.1.2",
+    "@types/node": "^18.11.7",
+    "eslint": "^8.26.0",
+    "publint": "^0.1.1",
+    "tsup": "^6.3.0",
+    "typescript": "^4.8.4",
+    "vitest": "^0.24.3"
+  }
+}
