@@ -3,13 +3,19 @@
   "version": "0.0.0-TODO",
   "type": "module",
   "files": [
-    "dist",
-    "*.d.ts"
+    "dist"
   ],
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*.d.ts"
+      ]
     }
   },
   "scripts": {
@@ -26,9 +32,9 @@
   "license": "MIT",
   "repository": "https://github.com/TODO/TODO",
   "keywords": [
-    "react",
-    "vite",
-    "nextjs",
+    "vite-plugin",
+    "cjs",
+    "interop",
     "ssr"
   ],
   "devDependencies": {
@@ -38,6 +44,12 @@
     "publint": "^0.1.1",
     "tsup": "^6.3.0",
     "typescript": "^4.8.4",
+    "vite": "^3.2.1",
     "vitest": "^0.24.3"
+  },
+  "dependencies": {
+    "acorn": "^8.8.1",
+    "estree-walker": "^3.0.1",
+    "magic-string": "^0.26.7"
   }
 }

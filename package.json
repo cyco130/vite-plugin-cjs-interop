@@ -2,8 +2,8 @@
   "name": "vite-plugin-cjs-interop-workspace-root",
   "private": "true",
   "scripts": {
-    "dev": "pnpm -r --parallel --filter \"./packages/*\" run dev",
-    "build": "pnpm -r --filter \"./packages/*\" run build",
+    "dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
+    "build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
     "prepare": "husky install",
     "precommit": "lint-staged",
     "test": "pnpm run test:prettier && pnpm run test:packages && pnpm run ci",

@@ -17,12 +17,12 @@ importers:
     specifiers:
       cjs-test-package: workspace:*
       vite: ^3.2.1
-      vitest: ^0.24.3
+      vite-plugin-cjs-interop: workspace:*
     dependencies:
       cjs-test-package: link:../cjs-test-package
     devDependencies:
       vite: 3.2.1
-      vitest: 0.24.3
+      vite-plugin-cjs-interop: link:../../vite-plugin-cjs-interop
 
   tests/cjs-test-package:
     specifiers: {}
@@ -31,11 +31,19 @@ importers:
     specifiers:
       "@cyco130/eslint-config": ^2.1.2
       "@types/node": ^18.11.7
+      acorn: ^8.8.1
       eslint: ^8.26.0
+      estree-walker: ^3.0.1
+      magic-string: ^0.26.7
       publint: ^0.1.1
       tsup: ^6.3.0
       typescript: ^4.8.4
+      vite: ^3.2.1
       vitest: ^0.24.3
+    dependencies:
+      acorn: 8.8.1
+      estree-walker: 3.0.1
+      magic-string: 0.26.7
     devDependencies:
       "@cyco130/eslint-config": 2.1.2_wyqvi574yv7oiwfeinomdzmc3m
       "@types/node": 18.11.7
@@ -43,6 +51,7 @@ importers:
       publint: 0.1.1
       tsup: 6.3.0_typescript@4.8.4
       typescript: 4.8.4
+      vite: 3.2.1
       vitest: 0.24.3
 
 packages:
@@ -415,7 +424,6 @@ packages:
       }
     engines: { node: ">=0.4.0" }
     hasBin: true
-    dev: true
 
   /aggregate-error/3.1.0:
     resolution:
@@ -1640,6 +1648,13 @@ packages:
     engines: { node: ">=4.0" }
     dev: true
 
+  /estree-walker/3.0.1:
+    resolution:
+      {
+        integrity: sha512-woY0RUD87WzMBUiZLx8NsYr23N5BKsOMZHhu2hoNRVh6NXGfoiT1KOL8G3UHlJAnEDGmfa5ubNA/AacfG+Kb0g==,
+      }
+    dev: false
+
   /esutils/2.0.3:
     resolution:
       {
@@ -2611,6 +2626,16 @@ packages:
       yallist: 4.0.0
     dev: true
 
+  /magic-string/0.26.7:
+    resolution:
+      {
+        integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==,
+      }
+    engines: { node: ">=12" }
+    dependencies:
+      sourcemap-codec: 1.4.8
+    dev: false
+
   /merge-stream/2.0.0:
     resolution:
       {
@@ -3438,6 +3463,13 @@ packages:
     dependencies:
       whatwg-url: 7.1.0
     dev: true
+
+  /sourcemap-codec/1.4.8:
+    resolution:
+      {
+        integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==,
+      }
+    dev: false
 
   /string-argv/0.3.1:
     resolution:
