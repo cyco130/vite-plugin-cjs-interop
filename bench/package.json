@@ -1,5 +1,0 @@
-{
-  "name": "vite-plugin-cjs-interop-bench",
-  "type": "module",
-  "private": true
-}

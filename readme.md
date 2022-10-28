@@ -1,1 +1,1 @@
-packages/vite-plugin-cjs-interop/readme.md
+vite-plugin-cjs-interop/readme.md

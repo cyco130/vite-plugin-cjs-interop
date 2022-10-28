@@ -1,5 +1,5 @@
 {
-  "name": "TODO-workspace-root",
+  "name": "vite-plugin-cjs-interop-workspace-root",
   "private": "true",
   "scripts": {
     "dev": "pnpm -r --parallel --filter \"./packages/*\" run dev",
