@@ -7,7 +7,7 @@ test("transforms default import", () => {
 	expect(output.code).toBe(OUTPUT);
 });
 
-const INPUT = `import foo from "foo";`;
+const INPUT = `import foo, { named, named2 as renamed } from "foo";`;
 
-const OUTPUT = `const foo = __cjsInterop1__.default;
+const OUTPUT = `const { default: foo = __cjsInterop1__, named, named2: renamed } = __cjsInterop1__.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
 import __cjsInterop1__ from "foo";`;

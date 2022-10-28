@@ -11,7 +11,11 @@ export default defineConfig({
 	},
 	plugins: [
 		cjsInterop({
-			dependencies: ["cjs-test-package"],
+			dependencies: [
+				"cjs-test-package",
+				"cjs-test-package/wrapped.cjs",
+				"cjs-test-package/synthetic.cjs",
+			],
 		}),
 	],
 });

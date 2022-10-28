@@ -11,15 +11,23 @@ In Node.js, when a CJS module that contains both a default export and named expo
 This plugin will automatically unwrap the default export from CJS dependencies that you specify during SSR builds. In other words, the following code:
 
 ```js
-import defaultImport from "some-cjs-module";
+import foo, { named, named2 as renamed } from "foo";
 ```
 
-will be transformed to:
+will be transformed into:
 
 ```js
-const defaultImport = __cjsInterop1__.default;
-import __cjsInterop1__ from "some-cjs-module";
+const {
+  default: foo = __cjsInterop1__,
+  named,
+  named2: renamed,
+} = __cjsInterop1__.default?.__esModule
+  ? __cjsInterop1__.default
+  : __cjsInterop1__;
+import __cjsInterop1__ from "foo";
 ```
+
+which takes care of unwrapping the default export and creating a synthetic default export if necessary.
 
 ## Installation
 
@@ -37,7 +45,11 @@ export default {
   plugins: [
     cjsInterop({
       // List of CJS dependencies that require interop
-      dependencies: ["styled-components"],
+      dependencies: [
+        "some-package",
+        // Deep imports should be specified separately
+        "some-package/deep/import",
+      ],
     }),
   ],
 };

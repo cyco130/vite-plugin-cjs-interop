@@ -30,6 +30,8 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			});
 
 			const toBeFixed: any[] = [];
+			const preambles: string[] = [];
+			let counter = 1;
 
 			walk(ast, {
 				enter(node) {
@@ -38,15 +40,42 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 							return;
 						}
 
-						const defaultSpecifier = node.specifiers.find(
-							(sp: any) => sp.type === "ImportDefaultSpecifier",
-						);
+						const destructurings: string[] = [];
+						const name = `__cjsInterop${counter++}__`;
+						let changed = false;
 
-						if (!defaultSpecifier) {
+						for (const specifier of node.specifiers) {
+							if (specifier.type === "ImportDefaultSpecifier") {
+								changed = true;
+								destructurings.push(
+									`default: ${specifier.local.name} = ${name}`,
+								);
+							} else if (specifier.type === "ImportSpecifier") {
+								changed = true;
+								if (
+									specifier.imported.name ===
+									specifier.local.name
+								) {
+									destructurings.push(specifier.local.name);
+								} else {
+									destructurings.push(
+										`${specifier.imported.name}: ${specifier.local.name}`,
+									);
+								}
+							}
+						}
+
+						if (!changed) {
 							return;
 						}
 
-						toBeFixed.push(defaultSpecifier);
+						preambles.push(
+							`const { ${destructurings.join(
+								", ",
+							)} } = ${name}.default?.__esModule ? ${name}.default : ${name};`,
+						);
+
+						toBeFixed.push(node);
 					}
 				},
 			});
@@ -56,33 +85,35 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			}
 
 			const ms = sourcemaps ? new MagicString(code) : null;
-			let counter = 1;
-			let prefix = "";
+			counter = 1;
 
 			for (const node of toBeFixed) {
 				const newName = `__cjsInterop${counter}__`;
-				prefix += `const ${node.local.name} = __cjsInterop${counter}__.default;\n`;
 				counter++;
+				const replacement = `import ${newName} from ${JSON.stringify(
+					node.source.value,
+				)};`;
 
 				if (sourcemaps) {
-					ms!.overwrite(node.start, node.end, newName);
+					ms!.overwrite(node.start, node.end, replacement);
 				} else {
 					code =
 						code.slice(0, node.start) +
-						newName +
+						replacement +
 						code.slice(node.end);
 				}
 			}
 
+			const preamble = preambles.join("\n") + "\n";
 			if (sourcemaps) {
-				ms!.prepend(prefix);
+				ms!.prepend(preamble);
 
 				return {
 					code: ms!.toString(),
 					map: ms!.generateMap({ hires: true }),
 				};
 			} else {
-				code = prefix + code;
+				code = preamble + code;
 
 				return {
 					code,
