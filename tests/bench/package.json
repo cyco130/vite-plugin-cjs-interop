@@ -1,18 +1,18 @@
 {
-  "name": "vite-plugin-cjs-interop-bench",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "start": "node dist/index.js",
-    "ci": "pnpm build && node dist/index.js"
-  },
-  "dependencies": {
-    "cjs-test-package": "workspace:*"
-  },
-  "devDependencies": {
-    "vite": "^3.2.1",
-    "vite-plugin-cjs-interop": "workspace:*"
-  }
+	"name": "vite-plugin-cjs-interop-bench",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"start": "node dist/index.js",
+		"ci": "pnpm build && node dist/index.js"
+	},
+	"dependencies": {
+		"cjs-test-package": "workspace:*"
+	},
+	"devDependencies": {
+		"vite": "^3.2.1",
+		"vite-plugin-cjs-interop": "workspace:*"
+	}
 }

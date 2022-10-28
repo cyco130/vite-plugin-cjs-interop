@@ -1,21 +1,21 @@
 {
-  "name": "vite-plugin-cjs-interop-workspace-root",
-  "private": "true",
-  "scripts": {
-    "dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
-    "build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
-    "prepare": "husky install",
-    "precommit": "lint-staged",
-    "test": "pnpm run test:prettier && pnpm run test:packages && pnpm run ci",
-    "ci": "pnpm -r --stream run ci",
-    "test:packages": "pnpm -r --stream run test",
-    "test:prettier": "prettier --check --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml'",
-    "format": "prettier --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml' --write"
-  },
-  "devDependencies": {
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "prettier": "^2.7.1",
-    "typescript": "^4.8.4"
-  }
+	"name": "vite-plugin-cjs-interop-workspace-root",
+	"private": "true",
+	"scripts": {
+		"dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
+		"build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
+		"prepare": "husky install",
+		"precommit": "lint-staged",
+		"test": "pnpm run test:prettier && pnpm run test:packages && pnpm run ci",
+		"ci": "pnpm -r --stream run ci",
+		"test:packages": "pnpm -r --stream run test",
+		"test:prettier": "prettier --check --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml'",
+		"format": "prettier --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml' --write"
+	},
+	"devDependencies": {
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
+		"prettier": "^2.7.1",
+		"typescript": "^4.8.4"
+	}
 }
