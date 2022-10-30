@@ -14,6 +14,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 	return {
 		name: "cjs-interop",
 		enforce: "post",
+		apply: "build",
 
 		configResolved(config) {
 			sourcemaps = !!config.build.sourcemap;
@@ -72,7 +73,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						preambles.push(
 							`const { ${destructurings.join(
 								", ",
-							)} } = ${name}.default?.__esModule ? ${name}.default : ${name};`,
+							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
 						);
 
 						toBeFixed.push(node);
