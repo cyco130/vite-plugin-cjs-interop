@@ -21,7 +21,7 @@ const {
   default: foo = __cjsInterop1__,
   named,
   named2: renamed,
-} = __cjsInterop1__.default?.__esModule
+} = __cjsInterop1__?.default?.__esModule
   ? __cjsInterop1__.default
   : __cjsInterop1__;
 import __cjsInterop1__ from "foo";
