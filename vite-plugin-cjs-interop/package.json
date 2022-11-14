@@ -28,9 +28,9 @@
 		"test:lint": "eslint . --max-warnings 0 --ignore-pattern dist",
 		"test:package": "publint"
 	},
-	"description": "TODO",
+	"description": "Vite plugin to unwrap default imports from CJS dependencies during SSR",
 	"license": "MIT",
-	"repository": "https://github.com/TODO/TODO",
+	"repository": "https://github.com/cyco130/vite-plugin-cjs-interop",
 	"keywords": [
 		"vite-plugin",
 		"cjs",
