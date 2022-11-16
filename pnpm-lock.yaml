@@ -30,11 +30,13 @@ importers:
     vite-plugin-cjs-interop:
         specifiers:
             "@cyco130/eslint-config": ^2.1.2
+            "@types/minimatch": ^5.1.2
             "@types/node": ^18.11.9
             acorn: ^8.8.1
             eslint: ^8.27.0
             estree-walker: ^3.0.1
             magic-string: ^0.26.7
+            minimatch: ^5.1.0
             publint: ^0.1.3
             tsup: ^6.5.0
             typescript: ^4.8.4
@@ -44,8 +46,10 @@ importers:
             acorn: 8.8.1
             estree-walker: 3.0.1
             magic-string: 0.26.7
+            minimatch: 5.1.0
         devDependencies:
             "@cyco130/eslint-config": 2.1.2_rmayb2veg2btbq6mbmnyivgasy
+            "@types/minimatch": 5.1.2
             "@types/node": 18.11.9
             eslint: 8.27.0
             publint: 0.1.3
@@ -237,6 +241,13 @@ packages:
         resolution:
             {
                 integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==,
+            }
+        dev: true
+
+    /@types/minimatch/5.1.2:
+        resolution:
+            {
+                integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==,
             }
         dev: true
 
@@ -593,7 +604,6 @@ packages:
             {
                 integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==,
             }
-        dev: true
 
     /binary-extensions/2.2.0:
         resolution:
@@ -620,7 +630,6 @@ packages:
             }
         dependencies:
             balanced-match: 1.0.2
-        dev: true
 
     /braces/3.0.2:
         resolution:
@@ -2703,7 +2712,6 @@ packages:
         engines: { node: ">=10" }
         dependencies:
             brace-expansion: 2.0.1
-        dev: true
 
     /minimist/1.2.7:
         resolution:
