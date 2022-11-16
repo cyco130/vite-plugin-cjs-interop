@@ -33,68 +33,65 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 			const toBeFixed: any[] = [];
 			const preambles: string[] = [];
-			let counter = 1;
 
 			const { walk } = await walker;
 
 			walk(ast, {
 				enter(node) {
 					if (node.type === "ImportDeclaration") {
-						if (!dependencies.has(node.source.value)) {
-							return;
+						if (dependencies.has(node.source.value)) {
+							toBeFixed.push(node)
 						}
-
-						const destructurings: string[] = [];
-						const name = `__cjsInterop${counter++}__`;
-						let changed = false;
-
-						for (const specifier of node.specifiers) {
-							if (specifier.type === "ImportDefaultSpecifier") {
-								changed = true;
-								destructurings.push(
-									`default: ${specifier.local.name} = ${name}`,
-								);
-							} else if (specifier.type === "ImportSpecifier") {
-								changed = true;
-								if (
-									specifier.imported.name ===
-									specifier.local.name
-								) {
-									destructurings.push(specifier.local.name);
-								} else {
-									destructurings.push(
-										`${specifier.imported.name}: ${specifier.local.name}`,
-									);
-								}
-							}
-						}
-
-						if (!changed) {
-							return;
-						}
-
-						preambles.push(
-							`const { ${destructurings.join(
-								", ",
-							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-						);
-
-						toBeFixed.push(node);
 					}
-				},
-			});
+				}
+			})
 
 			if (toBeFixed.length === 0) {
 				return;
 			}
+			const bottomUpToBeFixed = toBeFixed.reverse()
 
 			const ms = sourcemaps ? new MagicString(code) : null;
-			counter = 1;
+			let counter = 1;
 
-			for (const node of toBeFixed) {
-				const newName = `__cjsInterop${counter}__`;
-				counter++;
-				const replacement = `import ${newName} from ${JSON.stringify(
+			for (const node of bottomUpToBeFixed) {
+				const destructurings: string[] = [];
+				const name = `__cjsInterop${counter++}__`;
+				let changed = false;
+
+				for (const specifier of node.specifiers) {
+					if (specifier.type === "ImportDefaultSpecifier") {
+						changed = true;
+						destructurings.push(
+							`default: ${specifier.local.name} = ${name}`,
+						);
+					} else if (specifier.type === "ImportSpecifier") {
+						changed = true;
+						if (
+							specifier.imported.name ===
+							specifier.local.name
+						) {
+							destructurings.push(specifier.local.name);
+						} else {
+							destructurings.push(
+								`${specifier.imported.name}: ${specifier.local.name}`,
+							);
+						}
+					}
+				}
+
+				if (!changed) {
+					return;
+				}
+
+				preambles.push(
+					`const { ${destructurings.join(
+						", ",
+					)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+				);
+
+			
+				const replacement = `import ${name} from ${JSON.stringify(
 					node.source.value,
 				)};`;
 
@@ -108,7 +105,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				}
 			}
 
-			const preamble = preambles.join("\n") + "\n";
+			const preamble = preambles.reverse().join("\n") + "\n";
 			if (sourcemaps) {
 				ms!.prepend(preamble);
 
