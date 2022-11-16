@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 
-console.log("ESM version");
+console.log("CJS version");
 
 export default defineConfig({
 	build: {

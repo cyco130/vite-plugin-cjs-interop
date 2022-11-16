@@ -1,9 +1,11 @@
 import { test, expect } from "vitest";
 import { cjsInterop } from ".";
 
-test("transforms default import", () => {
+test("transforms default import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
-	const output = (plugin.transform as any)!(INPUT, "x.js", { ssr: true });
+	const output = await (plugin.transform as any)!(INPUT, "x.js", {
+		ssr: true,
+	});
 	expect(output.code).toBe(OUTPUT);
 });
 

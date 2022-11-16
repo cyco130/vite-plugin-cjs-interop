@@ -1,7 +1,8 @@
 import type { Plugin } from "vite";
 import { Parser } from "acorn";
-import { walk } from "estree-walker";
 import MagicString from "magic-string";
+
+const walker = import("estree-walker");
 
 export interface CjsInteropOptions {
 	dependencies: string[];
@@ -20,7 +21,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			sourcemaps = !!config.build.sourcemap;
 		},
 
-		transform(code, id, options) {
+		async transform(code, id, options) {
 			if (!options?.ssr) return;
 
 			const ast = Parser.parse(code, {
@@ -33,6 +34,8 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			const toBeFixed: any[] = [];
 			const preambles: string[] = [];
 			let counter = 1;
+
+			const { walk } = await walker;
 
 			walk(ast, {
 				enter(node) {
