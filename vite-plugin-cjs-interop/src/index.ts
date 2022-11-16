@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 import { Parser } from "acorn";
 import MagicString from "magic-string";
-import minimatch from 'minimatch'
+import minimatch from "minimatch";
 
 const walker = import("estree-walker");
 
@@ -13,8 +13,8 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const dependencies = Array.from(new Set(options.dependencies));
 	let sourcemaps = false;
 	const matchesDependencies = (value: string) => {
-		return dependencies.some((dependency) => minimatch(value, dependency))
-	}
+		return dependencies.some((dependency) => minimatch(value, dependency));
+	};
 	return {
 		name: "cjs-interop",
 		enforce: "post",
