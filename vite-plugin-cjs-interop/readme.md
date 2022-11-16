@@ -49,6 +49,8 @@ export default {
         "some-package",
         // Deep imports should be specified separately
         "some-package/deep/import",
+        // But globs are supported
+        "some-package/foo/*",
       ],
     }),
   ],
