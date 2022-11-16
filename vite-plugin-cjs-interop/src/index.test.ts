@@ -33,3 +33,23 @@ const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cj
 	import __cjsInterop2__ from "foo";
 	import __cjsInterop1__ from "bar";
 `;
+
+test("supports globs in dependencies list", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo/*"] });
+	const output = await (plugin.transform as any)!(GLOB_INPUT, "x.js", {
+		ssr: true,
+	});
+	expect(output.code).toBe(GLOB_OUTPUT);
+});
+
+const GLOB_INPUT = `
+	import fooX, { namedX, named2 as renamedX } from "foo/x";
+	import fooY, { namedY, named2 as renamedY } from "foo/y";
+`;
+
+const GLOB_OUTPUT = `const { default: fooX = __cjsInterop2__, namedX, named2: renamedX } = __cjsInterop2__?.default?.__esModule ? __cjsInterop2__.default : __cjsInterop2__;
+const { default: fooY = __cjsInterop1__, namedY, named2: renamedY } = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+
+	import __cjsInterop2__ from "foo/x";
+	import __cjsInterop1__ from "foo/y";
+`;
