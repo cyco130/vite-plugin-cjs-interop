@@ -1,4 +1,5 @@
 import defaultImport1, { named } from "cjs-test-package";
+import defaultImportX, { named as meh } from "cjs-test-package";
 import defaultImport2, { named as renamed } from "cjs-test-package/wrapped.cjs";
 import defaultImport3 from "cjs-test-package/synthetic.cjs";
 import assert from "assert";
@@ -11,3 +12,4 @@ assert(
 	defaultImport3.named === "named",
 	"Synthetic default import is incorrect",
 );
+console.log(meh);
