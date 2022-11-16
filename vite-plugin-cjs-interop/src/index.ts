@@ -40,16 +40,16 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				enter(node) {
 					if (node.type === "ImportDeclaration") {
 						if (dependencies.has(node.source.value)) {
-							toBeFixed.push(node)
+							toBeFixed.push(node);
 						}
 					}
-				}
-			})
+				},
+			});
 
 			if (toBeFixed.length === 0) {
 				return;
 			}
-			const bottomUpToBeFixed = toBeFixed.reverse()
+			const bottomUpToBeFixed = toBeFixed.reverse();
 
 			const ms = sourcemaps ? new MagicString(code) : null;
 			let counter = 1;
@@ -67,10 +67,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						);
 					} else if (specifier.type === "ImportSpecifier") {
 						changed = true;
-						if (
-							specifier.imported.name ===
-							specifier.local.name
-						) {
+						if (specifier.imported.name === specifier.local.name) {
 							destructurings.push(specifier.local.name);
 						} else {
 							destructurings.push(
@@ -90,7 +87,6 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
 				);
 
-			
 				const replacement = `import ${name} from ${JSON.stringify(
 					node.source.value,
 				)};`;
