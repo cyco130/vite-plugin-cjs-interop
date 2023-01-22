@@ -6,11 +6,31 @@ import minimatch from "minimatch";
 const walker = import("estree-walker");
 
 export interface CjsInteropOptions {
+	/**
+	 * List of CJS dependencies that require interoperability fixes.
+	 * Deep imports (`package/import`) should be specified separately but
+	 * globs (`package/*`) are supported.
+	 */
 	dependencies: string[];
+	/**
+	 * Whether to run the plugin for client builds. Normally it's only needed for SSR builds
+	 * but it can be sometimes useful to run it for library mode builds.
+	 *
+	 * @default false
+	 */
+	client?: boolean;
+	/**
+	 * When to run the plugin. Normally it's only needed for SSR builds.
+	 *
+	 * @default "build"
+	 */
+	apply?: "build" | "serve" | "both";
 }
 
 export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const dependencies = Array.from(new Set(options.dependencies));
+	const { client = false, apply = "build" } = options;
+
 	let sourcemaps = false;
 	const matchesDependencies = (value: string) => {
 		return dependencies.some((dependency) => minimatch(value, dependency));
@@ -18,14 +38,14 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 	return {
 		name: "cjs-interop",
 		enforce: "post",
-		apply: "build",
+		apply: apply === "both" ? undefined : apply,
 
 		configResolved(config) {
 			sourcemaps = !!config.build.sourcemap;
 		},
 
 		async transform(code, id, options) {
-			if (!options?.ssr) return;
+			if (!client && !options?.ssr) return;
 
 			const ast = Parser.parse(code, {
 				sourceType: "module",
