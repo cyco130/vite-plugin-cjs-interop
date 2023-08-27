@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 import { Parser } from "acorn";
 import MagicString from "magic-string";
-import minimatch from "minimatch";
+import { minimatch } from "minimatch";
 
 const walker = import("estree-walker");
 
@@ -59,10 +59,10 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 			const { walk } = await walker;
 
-			walk(ast, {
+			walk(ast as any, {
 				enter(node) {
 					if (node.type === "ImportDeclaration") {
-						if (matchesDependencies(node.source.value)) {
+						if (matchesDependencies(node.source.value as string)) {
 							toBeFixed.push(node);
 						}
 					}
