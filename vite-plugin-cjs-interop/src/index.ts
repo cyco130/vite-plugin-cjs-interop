@@ -76,6 +76,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 			const ms = sourcemaps ? new MagicString(code) : null;
 			let counter = 1;
+			let isNamespaceImport = false;
 
 			for (const node of bottomUpToBeFixed) {
 				const destructurings: string[] = [];
@@ -97,18 +98,26 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 								`${specifier.imported.name}: ${specifier.local.name}`,
 							);
 						}
+					} else if (specifier.type === "ImportNamespaceSpecifier") {
+						changed = true;
+						isNamespaceImport = true;
+						destructurings.push(specifier.local.name);
 					}
 				}
 
 				if (!changed) {
 					continue;
 				}
-
-				preambles.push(
-					`const { ${destructurings.join(
-						", ",
-					)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-				);
+				if (!isNamespaceImport)
+					preambles.push(
+						`const { ${destructurings.join(
+							", ",
+						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+					);
+				else
+					preambles.push(
+						`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+					);
 
 				const replacement = `import ${name} from ${JSON.stringify(
 					node.source.value,
