@@ -34,6 +34,19 @@ const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cj
 	import __cjsInterop1__ from "bar";
 `;
 
+test("transforms namespace import", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+	const output = await (plugin.transform as any)!(NAMESPACE_INPUT, "x.js", {
+		ssr: true,
+	});
+	expect(output.code).toBe(NAMESPACE_OUTPUT);
+});
+
+const NAMESPACE_INPUT = `import * as foo from "foo";`;
+
+const NAMESPACE_OUTPUT = `const foo = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+import __cjsInterop1__ from "foo";`;
+
 test("supports globs in dependencies list", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo/*"] });
 	const output = await (plugin.transform as any)!(GLOB_INPUT, "x.js", {
