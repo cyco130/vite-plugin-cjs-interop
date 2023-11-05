@@ -66,3 +66,27 @@ const { default: fooY = __cjsInterop1__, namedY, named2: renamedY } = __cjsInter
 	import __cjsInterop2__ from "foo/x";
 	import __cjsInterop1__ from "foo/y";
 `;
+
+test("supports dynamic imports", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+
+	const output = await (plugin.transform as any)!(DYNAMIC_INPUT, "x.js", {
+		ssr: true,
+	});
+
+	expect(output.code).toBe(DYNAMIC_OUTPUT);
+});
+
+const DYNAMIC_INPUT = `
+	const importPromise = import("foo").then(({ default: barDefault, barNamed }) => {
+		// Use barDefault and barNamed here
+	});
+`;
+
+const DYNAMIC_OUTPUT = `
+import { __cjs_dyn_import__ } from "virtual:cjs-dyn-import";
+
+	const importPromise = import("foo").then(__cjs_dyn_import__).then(({ default: barDefault, barNamed }) => {
+		// Use barDefault and barNamed here
+	});
+`;
