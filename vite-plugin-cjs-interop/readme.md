@@ -29,6 +29,18 @@ import __cjsInterop1__ from "foo";
 
 which takes care of unwrapping the default export and creating a synthetic default export if necessary.
 
+The change for dynamic imports is more complicated, but allows the `import()` function to resolve to an object that not only resembles the standard ES6 namespace as expected, but also a CommonJS export:
+
+```js
+const foo = await import("foo");
+
+// ES6 namespace, with default export
+foo.default.bar(); // Works
+
+// CommonJS Module (some libraries expect this to work because webpack allows it)
+foo.bar(); // Also works
+```
+
 ## Installation
 
 ```sh
