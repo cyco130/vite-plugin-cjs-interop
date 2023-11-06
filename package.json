@@ -6,8 +6,8 @@
 		"build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
 		"prepare": "husky install",
 		"precommit": "lint-staged",
-		"test": "pnpm run test:prettier && pnpm run test:packages && pnpm run ci",
-		"ci": "pnpm -r --stream run ci",
+		"test": "pnpm run /^test:/",
+		"test:ci": "pnpm -r --stream run ci",
 		"test:packages": "pnpm -r --stream run test",
 		"test:prettier": "prettier --check --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml'",
 		"format": "prettier --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml' --write"
