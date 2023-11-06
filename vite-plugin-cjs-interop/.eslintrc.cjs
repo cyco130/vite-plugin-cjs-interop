@@ -3,7 +3,10 @@ require("@cyco130/eslint-config/patch");
 module.exports = {
 	root: true,
 	extends: ["@cyco130/eslint-config/node"],
-	parserOptions: { tsconfigRootDir: __dirname },
+	ignorePatterns: ["node_modules", "dist", "**/*.cjs"],
+	parserOptions: {
+		project: [__dirname + "/tsconfig.json"],
+	},
 	settings: {
 		"import/resolver": {
 			typescript: {
