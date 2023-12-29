@@ -22,7 +22,7 @@ export interface CjsInteropOptions {
 	/**
 	 * When to run the plugin. Normally it's only needed for SSR builds.
 	 *
-	 * @default "build"
+	 * @default "both"
 	 */
 	apply?: "build" | "serve" | "both";
 }
@@ -30,7 +30,7 @@ export interface CjsInteropOptions {
 export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const virtualModuleId = "virtual:cjs-dyn-import";
 	const dependencies = Array.from(new Set(options.dependencies));
-	const { client = false, apply = "build" } = options;
+	const { client = false, apply = "both" } = options;
 
 	let sourcemaps = false;
 	const matchesDependencies = (value: string) => {
