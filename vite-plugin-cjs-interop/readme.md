@@ -4,7 +4,7 @@ Vite plugin to unwrap default imports from CJS dependencies during SSR.
 
 ## Problem
 
-In Node.js, when a CJS module that contains both a default export and named exports is imported from an ESM module, the default export has to be accessed via the `default` property of the imported module. Vite has some logic to handle this during development, but it doesn't apply to SSR builds with `external` CJS dependencies. You don't get any indication that it won't work in production. TypeScript doesn't complain either.
+In Node.js, when a CJS module that contains both a default export and named exports is imported from an ESM module, the default export has to be accessed via the `default` property of the imported module. Prior to version 5, Vite had some logic to handle this during development, but it didn't apply to SSR builds with `external` CJS dependencies. Since Vite 5, the problem happens in development as well. You don't get any indication that it won't work in production. TypeScript doesn't complain either.
 
 ## Solution
 

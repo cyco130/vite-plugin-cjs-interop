@@ -20,7 +20,7 @@ export interface CjsInteropOptions {
 	 */
 	client?: boolean;
 	/**
-	 * When to run the plugin. Normally it's only needed for SSR builds.
+	 * When to run the plugin.
 	 *
 	 * @default "both"
 	 */
