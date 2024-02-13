@@ -47,6 +47,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 		async transform(code, id, options) {
 			if (!client && !options?.ssr) return;
+			if (id.endsWith(".css")) return;
 
 			const ast = Parser.parse(code, {
 				sourceType: "module",
