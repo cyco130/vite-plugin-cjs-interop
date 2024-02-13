@@ -27,6 +27,9 @@ export interface CjsInteropOptions {
 	apply?: "build" | "serve" | "both";
 }
 
+const CSS_LANGS_RE =
+	/\.(css|less|sass|scss|styl|stylus|pcss|postcss|sss)(?:$|\?)/;
+
 export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const virtualModuleId = "virtual:cjs-dyn-import";
 	const dependencies = Array.from(new Set(options.dependencies));
@@ -47,7 +50,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 		async transform(code, id, options) {
 			if (!client && !options?.ssr) return;
-			if (id.endsWith(".css")) return;
+			if (CSS_LANGS_RE.test(id)) return;
 
 			const ast = Parser.parse(code, {
 				sourceType: "module",

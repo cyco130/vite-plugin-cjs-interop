@@ -93,7 +93,7 @@ import { __cjs_dyn_import__ } from "virtual:cjs-dyn-import";
 
 const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
 
-test("ingnors css code", async () => {
+test("ignore css assets", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
 	const output = await (plugin.transform as any)!(CSS_INPUT, "x.css", {
