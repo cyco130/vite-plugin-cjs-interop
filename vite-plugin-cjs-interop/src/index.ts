@@ -1,5 +1,6 @@
 import type { Plugin } from "vite";
 import { Parser } from "acorn";
+import { importAssertions } from "acorn-import-assertions";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
 
@@ -52,7 +53,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const ast = Parser.parse(code, {
+			const ast = Parser.extend(importAssertions).parse(code, {
 				sourceType: "module",
 				ecmaVersion: "latest",
 				locations: true,
