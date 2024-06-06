@@ -9,6 +9,10 @@
 		{
 			"depTypeList": ["peerDependencies"],
 			"enabled": false
+		},
+		{
+			"matchPackagePatterns": ["^eslint$"],
+			"allowedVersions": "<9"
 		}
 	],
 	"ignoreDeps": []
