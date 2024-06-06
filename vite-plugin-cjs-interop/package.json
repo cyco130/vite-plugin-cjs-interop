@@ -31,21 +31,21 @@
 		"ssr"
 	],
 	"devDependencies": {
-		"@cyco130/eslint-config": "^3.7.1",
+		"@cyco130/eslint-config": "^3.9.0",
 		"@types/minimatch": "^5.1.2",
-		"@types/node": "^20.11.30",
+		"@types/node": "^20.14.2",
 		"eslint": "^8.57.0",
-		"publint": "^0.2.7",
-		"tsup": "^8.0.2",
-		"typescript": "^5.4.3",
-		"vite": "^5.2.6",
-		"vitest": "^1.4.0"
+		"publint": "^0.2.8",
+		"tsup": "^8.1.0",
+		"typescript": "^5.4.5",
+		"vite": "^5.2.12",
+		"vitest": "^1.6.0"
 	},
 	"dependencies": {
 		"acorn": "^8.11.3",
 		"acorn-import-assertions": "^1.9.0",
 		"estree-walker": "^3.0.3",
-		"magic-string": "^0.30.8",
-		"minimatch": "^9.0.3"
+		"magic-string": "^0.30.10",
+		"minimatch": "^9.0.4"
 	}
 }
