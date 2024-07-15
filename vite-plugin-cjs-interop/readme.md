@@ -65,11 +65,15 @@ export default {
         "some-package/foo/*",
         // Even deep globs for scoped packages
         "@some-scope/**",
+        // If you want to skip a specific package, you can use negative globs
+        "!@donottransformme/**",
       ],
     }),
   ],
 };
 ```
+
+The matcher uses [minimatch](https://github.com/isaacs/minimatch) underneath, for more details on supported syntax.
 
 ## License
 
