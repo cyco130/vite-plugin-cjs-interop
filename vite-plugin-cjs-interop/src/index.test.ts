@@ -34,6 +34,22 @@ const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cj
 	import __cjsInterop1__ from "bar";
 `;
 
+test("Will skip dependencies specified with a negative glob", async () => {
+	const plugin = cjsInterop({ dependencies: ["!foo", "bar"] });
+
+	const output = await (plugin.transform as any)!(MULTIPLE_INPUT, "x.js", {
+		ssr: true,
+	});
+
+	const EXPECTED_OUTPUT_WITHOUT_FOO = `const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+
+	import foo, { named, named2 as renamed } from "foo";
+	import __cjsInterop1__ from "bar";
+`;
+
+	expect(output.code).toBe(EXPECTED_OUTPUT_WITHOUT_FOO);
+});
+
 test("transforms namespace import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 	const output = await (plugin.transform as any)!(NAMESPACE_INPUT, "x.js", {
