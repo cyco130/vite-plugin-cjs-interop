@@ -1,6 +1,5 @@
 import type { Plugin } from "vite";
-import { Parser } from "acorn";
-import { importAssertions } from "acorn-import-assertions";
+import oxc from "oxc-parser";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
 
@@ -53,12 +52,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const ast = Parser.extend(importAssertions).parse(code, {
-				sourceType: "module",
-				ecmaVersion: "latest",
-				locations: true,
-				allowHashBang: true,
-			});
+			const { program: ast } = await oxc.parseAsync(code);
 
 			const toBeFixed: any[] = [];
 			const dynamicImportsToBeFixed: any[] = [];
@@ -74,7 +68,9 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						}
 					} else if (node.type === "ImportExpression") {
 						if (
-							node.source.type === "Literal" &&
+							// @ts-expect-error OXC uses StringLiteral and not Literal
+							node.source.type === "StringLiteral" &&
+							// @ts-expect-error OXC uses StringLiteral and not Literal
 							matchesDependencies(node.source.value as string)
 						) {
 							dynamicImportsToBeFixed.push(node);
@@ -112,7 +108,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				const name = `__cjsInterop${counter++}__`;
 				let changed = false;
 
-				for (const specifier of node.specifiers) {
+				for (const specifier of node.specifiers || []) {
 					if (specifier.type === "ImportDefaultSpecifier") {
 						changed = true;
 						destructurings.push(
