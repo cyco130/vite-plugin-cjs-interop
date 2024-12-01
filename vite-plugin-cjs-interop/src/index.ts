@@ -37,9 +37,18 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const { client = false, apply = "both" } = options;
 
 	let sourcemaps = false;
+
+	const matchedDependencies: Record<string, boolean> = {};
+
 	const matchesDependencies = (value: string) => {
-		return dependencies.some((dependency) => minimatch(value, dependency));
+		if (!(value in matchedDependencies)) {
+			matchedDependencies[value] = dependencies.some((dependency) =>
+				minimatch(value, dependency),
+			);
+		}
+		return matchedDependencies[value];
 	};
+
 	return {
 		name: "cjs-interop",
 		enforce: "post",
@@ -61,53 +70,119 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			});
 
 			const toBeFixed: any[] = [];
-			const dynamicImportsToBeFixed: any[] = [];
 			const preambles: string[] = [];
+			let hasDynamicImportsToFix = false;
 
 			const { walk } = await walker;
 
 			walk(ast as any, {
 				enter(node) {
-					if (node.type === "ImportDeclaration") {
-						if (matchesDependencies(node.source.value as string)) {
-							toBeFixed.push(node);
-						}
-					} else if (node.type === "ImportExpression") {
-						if (
-							node.source.type === "Literal" &&
-							matchesDependencies(node.source.value as string)
-						) {
-							dynamicImportsToBeFixed.push(node);
-						}
+					switch (node.type) {
+						case "ImportDeclaration":
+						case "ExportNamedDeclaration":
+						case "ImportExpression":
+							if (
+								node.source &&
+								node.source.type === "Literal" &&
+								matchesDependencies(node.source.value as string)
+							) {
+								toBeFixed.push(node);
+								if (node.type === "ImportExpression") {
+									hasDynamicImportsToFix = true;
+								}
+							}
+							break;
+						default:
 					}
 				},
 			});
 
-			if (
-				toBeFixed.length === 0 &&
-				dynamicImportsToBeFixed.length === 0
-			) {
+			if (toBeFixed.length === 0) {
 				return;
 			}
 			const bottomUpToBeFixed = toBeFixed.reverse();
 
 			const ms = sourcemaps ? new MagicString(code) : null;
 			let counter = 1;
+			let specifierCounter = 1;
 			let isNamespaceImport = false;
 
-			for (const node of dynamicImportsToBeFixed.reverse()) {
-				const insertion = ".then(__cjs_dyn_import__)";
-				if (sourcemaps) {
-					ms!.appendRight(node.end, insertion);
-				} else {
-					code =
-						code.slice(0, node.end) +
-						insertion +
-						code.slice(node.end);
-				}
-			}
-
 			for (const node of bottomUpToBeFixed) {
+				if (node.type === "ImportExpression") {
+					const insertion = ".then(__cjs_dyn_import__)";
+					if (sourcemaps) {
+						ms!.appendRight(node.end, insertion);
+					} else {
+						code =
+							code.slice(0, node.end) +
+							insertion +
+							code.slice(node.end);
+					}
+					continue;
+				}
+
+				if (node.type === "ExportNamedDeclaration") {
+					const importDestructurings = [];
+					const exportDestructurings = [];
+					const name = `__cjsInterop${counter++}__`;
+					let changed = false;
+					let defaultExportSpecifier = null;
+					for (const specifier of node.specifiers) {
+						if (specifier.type === "ExportSpecifier") {
+							if (specifier.local.name === "default") {
+								defaultExportSpecifier = specifier;
+								continue;
+							}
+							changed = true;
+							const specifierName = `__cjsInteropSpecifier${specifierCounter++}__`;
+							importDestructurings.push(
+								`${specifier.local.name}: ${specifierName}`,
+							);
+							exportDestructurings.push(
+								`${specifierName} as ${specifier.exported.name}`,
+							);
+						} else {
+							throw new Error(
+								`Unknown ExportNamedDeclaration type specifier: ${specifier.type}`,
+							);
+						}
+					}
+					if (!changed) {
+						continue;
+					}
+					if (defaultExportSpecifier) {
+						exportDestructurings.push(
+							`${name} as ${defaultExportSpecifier.exported.name}}`,
+						);
+					}
+					preambles.push(
+						`const { ${importDestructurings.join(
+							", ",
+						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+					);
+					const replacementNamedImports = `import ${name} from ${JSON.stringify(
+						node.source.value,
+					)};`;
+					const replacementNamedExports = `export { ${exportDestructurings.join(", ")} };`;
+
+					const replacement = [
+						replacementNamedImports,
+						replacementNamedExports,
+					]
+						.filter(Boolean)
+						.join("\n");
+
+					if (ms) {
+						ms.overwrite(node.start, node.end, replacement);
+					} else {
+						code =
+							code.slice(0, node.start) +
+							replacement +
+							code.slice(node.end);
+					}
+					continue;
+				}
+
 				const destructurings: string[] = [];
 				const name = `__cjsInterop${counter++}__`;
 				let changed = false;
@@ -162,7 +237,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				}
 			}
 
-			if (dynamicImportsToBeFixed.length) {
+			if (hasDynamicImportsToFix) {
 				const importCompat = `import { __cjs_dyn_import__ } from "${virtualModuleId}";\n`;
 				if (sourcemaps) {
 					ms!.prepend(importCompat);
