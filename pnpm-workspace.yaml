@@ -1,3 +1,5 @@
 packages:
-    - "vite-plugin-cjs-interop"
-    - "tests/*"
+    - vite-plugin-cjs-interop
+    - tests/*
+onlyBuiltDependencies:
+    - esbuild
