@@ -107,6 +107,22 @@ import { __cjs_dyn_import__ } from "virtual:cjs-dyn-import";
 	});
 `;
 
+test("transforms re-export", async () => {
+	const REEXPORT_INPUT = `export { namedX, named2 as renamedX, default } from "foo";`;
+
+	const REEXPORT_OUTPUT = `const { namedX: __cjsInteropSpecifier1__, named2: __cjsInteropSpecifier2__ } = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+import __cjsInterop1__ from "foo";
+export { __cjsInteropSpecifier1__ as namedX, __cjsInteropSpecifier2__ as renamedX, __cjsInterop1__ as default} };`;
+
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+
+	const output = await (plugin.transform as any)!(REEXPORT_INPUT, "x.js", {
+		ssr: true,
+	});
+
+	expect(output.code).toBe(REEXPORT_OUTPUT);
+});
+
 const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
 
 test("ignore css assets", async () => {
