@@ -1,5 +1,7 @@
 packages:
     - vite-plugin-cjs-interop
     - tests/*
+
 onlyBuiltDependencies:
     - esbuild
+    - rolldown

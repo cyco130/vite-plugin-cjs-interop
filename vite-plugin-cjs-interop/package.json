@@ -12,8 +12,8 @@
 		}
 	},
 	"scripts": {
-		"build": "tsup",
-		"dev": "tsup --watch",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
 		"prepack": "rm -rf dist && pnpm build",
 		"test": "pnpm run /^test:/",
 		"test:unit": "vitest run",
@@ -39,7 +39,7 @@
 		"@types/node": "^18.19.80",
 		"eslint": "^9.22.0",
 		"publint": "^0.3.9",
-		"tsup": "^8.4.0",
+		"tsdown": "^0.9.6",
 		"typescript": "^5.8.2",
 		"vite": "^6.2.2",
 		"vitest": "^3.0.8"
