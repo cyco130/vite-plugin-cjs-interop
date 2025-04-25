@@ -51,7 +51,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const { program: ast } = await oxc.parseAsync(code);
+			const { program: ast } = await oxc.parseAsync(id, code);
 
 			const toBeFixed: any[] = [];
 			const dynamicImportsToBeFixed: any[] = [];
@@ -65,7 +65,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						}
 					} else if (node.type === "ImportExpression") {
 						if (
-							node.source.type === "StringLiteral" &&
+							node.source.type === "Literal" &&
 							matchesDependencies(node.source.value as string)
 						) {
 							dynamicImportsToBeFixed.push(node);
