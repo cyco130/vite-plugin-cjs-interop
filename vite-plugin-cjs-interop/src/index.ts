@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 import oxc from "oxc-parser";
 import MagicString from "magic-string";
-import { minimatch } from "minimatch";
+import picomatch from "picomatch";
 import { walk } from "oxc-walker";
 
 export interface CjsInteropOptions {
@@ -36,7 +36,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 	let sourcemaps = false;
 	const matchesDependencies = (value: string) => {
-		return dependencies.some((dependency) => minimatch(value, dependency));
+		return dependencies.some((dependency) => picomatch(dependency)(value));
 	};
 	return {
 		name: "cjs-interop",
@@ -47,136 +47,148 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			sourcemaps = !!config.build.sourcemap;
 		},
 
-		async transform(code, id, options) {
-			if (!client && !options?.ssr) return;
-			if (CSS_LANGS_RE.test(id)) return;
-
-			const { program: ast } = await oxc.parseAsync(id, code);
-
-			const toBeFixed: any[] = [];
-			const dynamicImportsToBeFixed: any[] = [];
-			const preambles: string[] = [];
-
-			walk(ast, {
-				enter(node) {
-					if (node.type === "ImportDeclaration") {
-						if (matchesDependencies(node.source.value as string)) {
-							toBeFixed.push(node);
-						}
-					} else if (node.type === "ImportExpression") {
-						if (
-							node.source.type === "Literal" &&
-							matchesDependencies(node.source.value as string)
-						) {
-							dynamicImportsToBeFixed.push(node);
-						}
-					}
+		transform: {
+			filter: {
+				id: {
+					exclude: CSS_LANGS_RE,
 				},
-			});
+			},
+			async handler(code, id, options) {
+				if (!client && !options?.ssr) return;
 
-			if (
-				toBeFixed.length === 0 &&
-				dynamicImportsToBeFixed.length === 0
-			) {
-				return;
-			}
-			const bottomUpToBeFixed = toBeFixed.reverse();
+				const { program: ast } = await oxc.parseAsync(id, code);
 
-			const ms = sourcemaps ? new MagicString(code) : null;
-			let counter = 1;
-			let isNamespaceImport = false;
+				const toBeFixed: any[] = [];
+				const dynamicImportsToBeFixed: any[] = [];
+				const preambles: string[] = [];
 
-			for (const node of dynamicImportsToBeFixed.reverse()) {
-				const insertion = ".then(__cjs_dyn_import__)";
-				if (sourcemaps) {
-					ms!.appendRight(node.end, insertion);
-				} else {
-					code =
-						code.slice(0, node.end) +
-						insertion +
-						code.slice(node.end);
-				}
-			}
-
-			for (const node of bottomUpToBeFixed) {
-				const destructurings: string[] = [];
-				const name = `__cjsInterop${counter++}__`;
-				let changed = false;
-
-				for (const specifier of node.specifiers || []) {
-					if (specifier.type === "ImportDefaultSpecifier") {
-						changed = true;
-						destructurings.push(
-							`default: ${specifier.local.name} = ${name}`,
-						);
-					} else if (specifier.type === "ImportSpecifier") {
-						changed = true;
-						if (specifier.imported.name === specifier.local.name) {
-							destructurings.push(specifier.local.name);
-						} else {
-							destructurings.push(
-								`${specifier.imported.name}: ${specifier.local.name}`,
-							);
+				walk(ast, {
+					enter(node) {
+						if (node.type === "ImportDeclaration") {
+							if (
+								matchesDependencies(node.source.value as string)
+							) {
+								toBeFixed.push(node);
+							}
+						} else if (node.type === "ImportExpression") {
+							if (
+								node.source.type === "Literal" &&
+								matchesDependencies(node.source.value as string)
+							) {
+								dynamicImportsToBeFixed.push(node);
+							}
 						}
-					} else if (specifier.type === "ImportNamespaceSpecifier") {
-						changed = true;
-						isNamespaceImport = true;
-						destructurings.push(specifier.local.name);
+					},
+				});
+
+				if (
+					toBeFixed.length === 0 &&
+					dynamicImportsToBeFixed.length === 0
+				) {
+					return;
+				}
+				const bottomUpToBeFixed = toBeFixed.reverse();
+
+				const ms = sourcemaps ? new MagicString(code) : null;
+				let counter = 1;
+				let isNamespaceImport = false;
+
+				for (const node of dynamicImportsToBeFixed.reverse()) {
+					const insertion = ".then(__cjs_dyn_import__)";
+					if (sourcemaps) {
+						ms!.appendRight(node.end, insertion);
+					} else {
+						code =
+							code.slice(0, node.end) +
+							insertion +
+							code.slice(node.end);
 					}
 				}
 
-				if (!changed) {
-					continue;
+				for (const node of bottomUpToBeFixed) {
+					const destructurings: string[] = [];
+					const name = `__cjsInterop${counter++}__`;
+					let changed = false;
+
+					for (const specifier of node.specifiers || []) {
+						if (specifier.type === "ImportDefaultSpecifier") {
+							changed = true;
+							destructurings.push(
+								`default: ${specifier.local.name} = ${name}`,
+							);
+						} else if (specifier.type === "ImportSpecifier") {
+							changed = true;
+							if (
+								specifier.imported.name === specifier.local.name
+							) {
+								destructurings.push(specifier.local.name);
+							} else {
+								destructurings.push(
+									`${specifier.imported.name}: ${specifier.local.name}`,
+								);
+							}
+						} else if (
+							specifier.type === "ImportNamespaceSpecifier"
+						) {
+							changed = true;
+							isNamespaceImport = true;
+							destructurings.push(specifier.local.name);
+						}
+					}
+
+					if (!changed) {
+						continue;
+					}
+					if (!isNamespaceImport)
+						preambles.push(
+							`const { ${destructurings.join(
+								", ",
+							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+						);
+					else
+						preambles.push(
+							`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+						);
+
+					const replacement = `import ${name} from ${JSON.stringify(
+						node.source.value,
+					)};`;
+
+					if (sourcemaps) {
+						ms!.overwrite(node.start, node.end, replacement);
+					} else {
+						code =
+							code.slice(0, node.start) +
+							replacement +
+							code.slice(node.end);
+					}
 				}
-				if (!isNamespaceImport)
-					preambles.push(
-						`const { ${destructurings.join(
-							", ",
-						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-					);
-				else
-					preambles.push(
-						`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-					);
 
-				const replacement = `import ${name} from ${JSON.stringify(
-					node.source.value,
-				)};`;
+				if (dynamicImportsToBeFixed.length) {
+					const importCompat = `import { __cjs_dyn_import__ } from "${virtualModuleId}";\n`;
+					if (sourcemaps) {
+						ms!.prepend(importCompat);
+					} else {
+						code = importCompat + code;
+					}
+				}
 
+				const preamble = preambles.reverse().join("\n") + "\n";
 				if (sourcemaps) {
-					ms!.overwrite(node.start, node.end, replacement);
+					ms!.prepend(preamble);
+
+					return {
+						code: ms!.toString(),
+						map: ms!.generateMap({ hires: true }),
+					};
 				} else {
-					code =
-						code.slice(0, node.start) +
-						replacement +
-						code.slice(node.end);
+					code = preamble + code;
+
+					return {
+						code,
+					};
 				}
-			}
-
-			if (dynamicImportsToBeFixed.length) {
-				const importCompat = `import { __cjs_dyn_import__ } from "${virtualModuleId}";\n`;
-				if (sourcemaps) {
-					ms!.prepend(importCompat);
-				} else {
-					code = importCompat + code;
-				}
-			}
-
-			const preamble = preambles.reverse().join("\n") + "\n";
-			if (sourcemaps) {
-				ms!.prepend(preamble);
-
-				return {
-					code: ms!.toString(),
-					map: ms!.generateMap({ hires: true }),
-				};
-			} else {
-				code = preamble + code;
-
-				return {
-					code,
-				};
-			}
+			},
 		},
 
 		resolveId(id) {
@@ -185,36 +197,41 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			}
 		},
 
-		load(id) {
-			if (id === virtualModuleId) {
-				return `
-// This file is generated by vite-plugin-cjs-interop
-// The cache allows the same object to be returned for the same dynamic import
-// however static imports are not affected and will therefore return a different
-// object
-const modCache = new WeakMap();
+		load: {
+			filter: {
+				id: virtualModuleId,
+			},
+			handler(id) {
+				if (id === virtualModuleId) {
+					return `
+	// This file is generated by vite-plugin-cjs-interop
+	// The cache allows the same object to be returned for the same dynamic import
+	// however static imports are not affected and will therefore return a different
+	// object
+	const modCache = new WeakMap();
 
-export function __cjs_dyn_import__(rawImport) {
-  if (rawImport?.default?.__esModule) {
-    return rawImport.default;
-  }
-  if (modCache.has(rawImport)) {
-    return modCache.get(rawImport);
-  }
-  const source = rawImport?.default;
-  if (source) {
-    const mod = Object.create(rawImport);
-    modCache.set(rawImport, mod);
-    Object.keys(source)
-      .filter(key => !Object.hasOwn(rawImport, key))
-      .forEach(key => {
-        Object.defineProperty(mod, key, { enumerable: true, get: () => source[key] })
-      });
-    return mod;
-  }
-  return rawImport;
-}`;
-			}
+	export function __cjs_dyn_import__(rawImport) {
+		if (rawImport?.default?.__esModule) {
+			return rawImport.default;
+		}
+		if (modCache.has(rawImport)) {
+			return modCache.get(rawImport);
+		}
+		const source = rawImport?.default;
+		if (source) {
+			const mod = Object.create(rawImport);
+			modCache.set(rawImport, mod);
+			Object.keys(source)
+				.filter(key => !Object.hasOwn(rawImport, key))
+				.forEach(key => {
+					Object.defineProperty(mod, key, { enumerable: true, get: () => source[key] })
+				});
+			return mod;
+		}
+		return rawImport;
+	}`;
+				}
+			},
 		},
 	};
 }

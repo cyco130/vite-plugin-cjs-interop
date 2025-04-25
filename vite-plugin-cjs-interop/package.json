@@ -36,6 +36,7 @@
 		"@cyco130/eslint-config": "^5.1.0",
 		"@types/minimatch": "^5.1.2",
 		"@types/node": "^22.15.2",
+		"@types/picomatch": "^4.0.0",
 		"eslint": "^9.25.1",
 		"publint": "^0.3.12",
 		"tsdown": "^0.9.6",
@@ -46,8 +47,8 @@
 	"dependencies": {
 		"estree-walker": "^3.0.3",
 		"magic-string": "^0.30.17",
-		"minimatch": "^10.0.1",
 		"oxc-parser": "^0.66.0",
-		"oxc-walker": "^0.2.5"
+		"oxc-walker": "^0.2.5",
+		"picomatch": "^4.0.2"
 	}
 }

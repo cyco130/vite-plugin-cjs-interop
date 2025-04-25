@@ -3,7 +3,7 @@ import { cjsInterop } from ".";
 
 test("transforms default import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
-	const output = await (plugin.transform as any)!(INPUT, "x.js", {
+	const output = await (plugin.transform as any).handler!(INPUT, "x.js", {
 		ssr: true,
 	});
 	expect(output.code).toBe(OUTPUT);
@@ -16,9 +16,13 @@ import __cjsInterop1__ from "foo";`;
 
 test("transforms multiple imports", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo", "bar"] });
-	const output = await (plugin.transform as any)!(MULTIPLE_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		MULTIPLE_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
 	expect(output.code).toBe(MULTIPLE_OUTPUT);
 });
 
@@ -37,9 +41,13 @@ const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cj
 test("Will skip dependencies specified with a negative glob", async () => {
 	const plugin = cjsInterop({ dependencies: ["!foo", "bar"] });
 
-	const output = await (plugin.transform as any)!(MULTIPLE_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		MULTIPLE_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
 
 	const EXPECTED_OUTPUT_WITHOUT_FOO = `const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
 
@@ -52,9 +60,13 @@ test("Will skip dependencies specified with a negative glob", async () => {
 
 test("transforms namespace import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
-	const output = await (plugin.transform as any)!(NAMESPACE_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		NAMESPACE_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
 	expect(output.code).toBe(NAMESPACE_OUTPUT);
 });
 
@@ -65,9 +77,14 @@ import __cjsInterop1__ from "foo";`;
 
 test("supports globs in dependencies list", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo/*"] });
-	const output = await (plugin.transform as any)!(GLOB_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		GLOB_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
+
 	expect(output.code).toBe(GLOB_OUTPUT);
 });
 
@@ -86,9 +103,13 @@ const { default: fooY = __cjsInterop1__, namedY, named2: renamedY } = __cjsInter
 test("supports dynamic imports", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
-	const output = await (plugin.transform as any)!(DYNAMIC_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		DYNAMIC_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
 
 	expect(output.code).toBe(DYNAMIC_OUTPUT);
 });
@@ -112,9 +133,13 @@ const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
 test("ignore css assets", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
-	const output = await (plugin.transform as any)!(CSS_INPUT, "x.css", {
-		ssr: true,
-	});
+	const output = await (plugin.transform as any).handler!(
+		CSS_INPUT,
+		"x.css",
+		{
+			ssr: true,
+		},
+	);
 
 	expect(output).toBeUndefined();
 });

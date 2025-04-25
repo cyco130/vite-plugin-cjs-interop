@@ -43,15 +43,15 @@ importers:
             magic-string:
                 specifier: ^0.30.17
                 version: 0.30.17
-            minimatch:
-                specifier: ^10.0.1
-                version: 10.0.1
             oxc-parser:
                 specifier: ^0.66.0
                 version: 0.66.0
             oxc-walker:
                 specifier: ^0.2.5
                 version: 0.2.5(oxc-parser@0.66.0)
+            picomatch:
+                specifier: ^4.0.2
+                version: 4.0.2
         devDependencies:
             "@cyco130/eslint-config":
                 specifier: ^5.1.0
@@ -62,6 +62,9 @@ importers:
             "@types/node":
                 specifier: ^22.15.2
                 version: 22.15.2
+            "@types/picomatch":
+                specifier: ^4.0.0
+                version: 4.0.0
             eslint:
                 specifier: ^9.25.1
                 version: 9.25.1(jiti@2.4.2)
@@ -1363,6 +1366,12 @@ packages:
         resolution:
             {
                 integrity: sha512-uKXqKN9beGoMdBfcaTY1ecwz6ctxuJAcUlwE55938g0ZJ8lRxwAZqRz2AJ4pzpt5dHdTPMB863UZ0ESiFUcP7A==,
+            }
+
+    "@types/picomatch@4.0.0":
+        resolution:
+            {
+                integrity: sha512-J1Bng+wlyEERWSgJQU1Pi0HObCLVcr994xT/M+1wcl/yNRTGBupsCxthgkdYG+GCOMaQH7iSVUY3LJVBBqG7MQ==,
             }
 
     "@typescript-eslint/eslint-plugin@8.31.0":
@@ -3064,13 +3073,6 @@ packages:
             }
         engines: { node: ">=18" }
 
-    minimatch@10.0.1:
-        resolution:
-            {
-                integrity: sha512-ethXTt3SGGR+95gudmqJ1eNhRO7eGEGIgYA9vnPatK4/etz2MEVDno5GMCibdMTuBMyElzIlgxMna3K94XDIDQ==,
-            }
-        engines: { node: 20 || >=22 }
-
     minimatch@3.1.2:
         resolution:
             {
@@ -4735,6 +4737,8 @@ snapshots:
         dependencies:
             undici-types: 6.21.0
 
+    "@types/picomatch@4.0.0": {}
+
     "@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)":
         dependencies:
             "@eslint-community/regexpp": 4.12.1
@@ -5928,10 +5932,6 @@ snapshots:
     mimic-fn@4.0.0: {}
 
     mimic-function@5.0.1: {}
-
-    minimatch@10.0.1:
-        dependencies:
-            brace-expansion: 2.0.1
 
     minimatch@3.1.2:
         dependencies:
