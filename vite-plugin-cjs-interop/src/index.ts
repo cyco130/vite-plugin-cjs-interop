@@ -2,8 +2,7 @@ import type { Plugin } from "vite";
 import oxc from "oxc-parser";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
-
-const walker = import("estree-walker");
+import { walk } from "oxc-walker";
 
 export interface CjsInteropOptions {
 	/**
@@ -58,9 +57,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			const dynamicImportsToBeFixed: any[] = [];
 			const preambles: string[] = [];
 
-			const { walk } = await walker;
-
-			walk(ast as any, {
+			walk(ast, {
 				enter(node) {
 					if (node.type === "ImportDeclaration") {
 						if (matchesDependencies(node.source.value as string)) {
@@ -68,9 +65,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						}
 					} else if (node.type === "ImportExpression") {
 						if (
-							// @ts-expect-error OXC uses StringLiteral and not Literal
 							node.source.type === "StringLiteral" &&
-							// @ts-expect-error OXC uses StringLiteral and not Literal
 							matchesDependencies(node.source.value as string)
 						) {
 							dynamicImportsToBeFixed.push(node);

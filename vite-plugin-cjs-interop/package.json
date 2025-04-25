@@ -44,9 +44,10 @@
 		"vitest": "^3.0.8"
 	},
 	"dependencies": {
-		"oxc-parser": "^0.36.0",
 		"estree-walker": "^3.0.3",
 		"magic-string": "^0.30.17",
-		"minimatch": "^10.0.1"
+		"minimatch": "^10.0.1",
+		"oxc-parser": "^0.36.0",
+		"oxc-walker": "^0.2.5"
 	}
 }
