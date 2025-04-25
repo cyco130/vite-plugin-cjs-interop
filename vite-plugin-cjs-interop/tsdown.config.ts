@@ -7,5 +7,8 @@ export default defineConfig([
 		platform: "node",
 		target: "node20",
 		dts: true,
+		publint: {
+			strict: true,
+		},
 	},
 ]);

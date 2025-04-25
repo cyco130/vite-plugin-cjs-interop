@@ -18,8 +18,7 @@
 		"test": "pnpm run /^test:/",
 		"test:unit": "vitest run",
 		"test:typecheck": "tsc -p tsconfig.json --noEmit",
-		"test:lint": "eslint . --max-warnings 0 --ignore-pattern dist",
-		"test:package": "publint --strict"
+		"test:lint": "eslint . --max-warnings 0 --ignore-pattern dist"
 	},
 	"description": "Vite plugin to unwrap default imports from CJS dependencies during SSR",
 	"license": "MIT",
