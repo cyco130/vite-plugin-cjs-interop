@@ -35,19 +35,19 @@
 	"devDependencies": {
 		"@cyco130/eslint-config": "^5.1.0",
 		"@types/minimatch": "^5.1.2",
-		"@types/node": "^18.19.80",
-		"eslint": "^9.22.0",
-		"publint": "^0.3.9",
+		"@types/node": "^22.15.2",
+		"eslint": "^9.25.1",
+		"publint": "^0.3.12",
 		"tsdown": "^0.9.6",
-		"typescript": "^5.8.2",
-		"vite": "^6.2.2",
-		"vitest": "^3.0.8"
+		"typescript": "^5.8.3",
+		"vite": "^6.3.3",
+		"vitest": "^3.1.2"
 	},
 	"dependencies": {
 		"estree-walker": "^3.0.3",
 		"magic-string": "^0.30.17",
 		"minimatch": "^10.0.1",
-		"oxc-parser": "^0.36.0",
+		"oxc-parser": "^0.66.0",
 		"oxc-walker": "^0.2.5"
 	}
 }
