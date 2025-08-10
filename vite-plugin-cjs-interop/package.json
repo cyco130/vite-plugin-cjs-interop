@@ -35,7 +35,7 @@
 	},
 	"devDependencies": {
 		"@cyco130/eslint-config": "^5.1.0",
-		"@types/minimatch": "^5.1.2",
+		"@types/minimatch": "^6.0.0",
 		"@types/node": "^18.19.80",
 		"eslint": "^9.22.0",
 		"publint": "^0.3.9",
