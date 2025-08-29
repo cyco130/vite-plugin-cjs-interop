@@ -52,135 +52,143 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const { program: ast } = await oxc.parseAsync(code);
+			try {
+				const { program: ast } = await oxc.parseAsync(id, code);
 
-			const toBeFixed: any[] = [];
-			const dynamicImportsToBeFixed: any[] = [];
-			const preambles: string[] = [];
+				const toBeFixed: any[] = [];
+				const dynamicImportsToBeFixed: any[] = [];
+				const preambles: string[] = [];
 
-			const { walk } = await walker;
+				const { walk } = await walker;
 
-			walk(ast as any, {
-				enter(node) {
-					if (node.type === "ImportDeclaration") {
-						if (matchesDependencies(node.source.value as string)) {
-							toBeFixed.push(node);
+				walk(ast as any, {
+					enter(node) {
+						if (node.type === "ImportDeclaration") {
+							if (
+								matchesDependencies(node.source.value as string)
+							) {
+								toBeFixed.push(node);
+							}
+						} else if (node.type === "ImportExpression") {
+							if (
+								node.source.type === "Literal" &&
+								matchesDependencies(node.source.value as string)
+							) {
+								dynamicImportsToBeFixed.push(node);
+							}
 						}
-					} else if (node.type === "ImportExpression") {
-						if (
-							// @ts-expect-error OXC uses StringLiteral and not Literal
-							node.source.type === "StringLiteral" &&
-							// @ts-expect-error OXC uses StringLiteral and not Literal
-							matchesDependencies(node.source.value as string)
-						) {
-							dynamicImportsToBeFixed.push(node);
-						}
-					}
-				},
-			});
+					},
+				});
 
-			if (
-				toBeFixed.length === 0 &&
-				dynamicImportsToBeFixed.length === 0
-			) {
-				return;
-			}
-			const bottomUpToBeFixed = toBeFixed.reverse();
-
-			const ms = sourcemaps ? new MagicString(code) : null;
-			let counter = 1;
-			let isNamespaceImport = false;
-
-			for (const node of dynamicImportsToBeFixed.reverse()) {
-				const insertion = ".then(__cjs_dyn_import__)";
-				if (sourcemaps) {
-					ms!.appendRight(node.end, insertion);
-				} else {
-					code =
-						code.slice(0, node.end) +
-						insertion +
-						code.slice(node.end);
+				if (
+					toBeFixed.length === 0 &&
+					dynamicImportsToBeFixed.length === 0
+				) {
+					return;
 				}
-			}
+				const bottomUpToBeFixed = toBeFixed.reverse();
 
-			for (const node of bottomUpToBeFixed) {
-				const destructurings: string[] = [];
-				const name = `__cjsInterop${counter++}__`;
-				let changed = false;
+				const ms = sourcemaps ? new MagicString(code) : null;
+				let counter = 1;
+				let isNamespaceImport = false;
 
-				for (const specifier of node.specifiers || []) {
-					if (specifier.type === "ImportDefaultSpecifier") {
-						changed = true;
-						destructurings.push(
-							`default: ${specifier.local.name} = ${name}`,
-						);
-					} else if (specifier.type === "ImportSpecifier") {
-						changed = true;
-						if (specifier.imported.name === specifier.local.name) {
-							destructurings.push(specifier.local.name);
-						} else {
+				for (const node of dynamicImportsToBeFixed.reverse()) {
+					const insertion = ".then(__cjs_dyn_import__)";
+					if (sourcemaps) {
+						ms!.appendRight(node.end, insertion);
+					} else {
+						code =
+							code.slice(0, node.end) +
+							insertion +
+							code.slice(node.end);
+					}
+				}
+
+				for (const node of bottomUpToBeFixed) {
+					const destructurings: string[] = [];
+					const name = `__cjsInterop${counter++}__`;
+					let changed = false;
+
+					for (const specifier of node.specifiers || []) {
+						if (specifier.type === "ImportDefaultSpecifier") {
+							changed = true;
 							destructurings.push(
-								`${specifier.imported.name}: ${specifier.local.name}`,
+								`default: ${specifier.local.name} = ${name}`,
 							);
+						} else if (specifier.type === "ImportSpecifier") {
+							changed = true;
+							if (
+								specifier.imported.name === specifier.local.name
+							) {
+								destructurings.push(specifier.local.name);
+							} else {
+								destructurings.push(
+									`${specifier.imported.name}: ${specifier.local.name}`,
+								);
+							}
+						} else if (
+							specifier.type === "ImportNamespaceSpecifier"
+						) {
+							changed = true;
+							isNamespaceImport = true;
+							destructurings.push(specifier.local.name);
 						}
-					} else if (specifier.type === "ImportNamespaceSpecifier") {
-						changed = true;
-						isNamespaceImport = true;
-						destructurings.push(specifier.local.name);
+					}
+
+					if (!changed) {
+						continue;
+					}
+					if (!isNamespaceImport)
+						preambles.push(
+							`const { ${destructurings.join(
+								", ",
+							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+						);
+					else
+						preambles.push(
+							`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
+						);
+
+					const replacement = `import ${name} from ${JSON.stringify(
+						node.source.value,
+					)};`;
+
+					if (sourcemaps) {
+						ms!.overwrite(node.start, node.end, replacement);
+					} else {
+						code =
+							code.slice(0, node.start) +
+							replacement +
+							code.slice(node.end);
 					}
 				}
 
-				if (!changed) {
-					continue;
+				if (dynamicImportsToBeFixed.length) {
+					const importCompat = `import { __cjs_dyn_import__ } from "${virtualModuleId}";\n`;
+					if (sourcemaps) {
+						ms!.prepend(importCompat);
+					} else {
+						code = importCompat + code;
+					}
 				}
-				if (!isNamespaceImport)
-					preambles.push(
-						`const { ${destructurings.join(
-							", ",
-						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-					);
-				else
-					preambles.push(
-						`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-					);
 
-				const replacement = `import ${name} from ${JSON.stringify(
-					node.source.value,
-				)};`;
-
+				const preamble = preambles.reverse().join("\n") + "\n";
 				if (sourcemaps) {
-					ms!.overwrite(node.start, node.end, replacement);
+					ms!.prepend(preamble);
+
+					return {
+						code: ms!.toString(),
+						map: ms!.generateMap({ hires: true }),
+					};
 				} else {
-					code =
-						code.slice(0, node.start) +
-						replacement +
-						code.slice(node.end);
+					code = preamble + code;
+
+					return {
+						code,
+					};
 				}
-			}
-
-			if (dynamicImportsToBeFixed.length) {
-				const importCompat = `import { __cjs_dyn_import__ } from "${virtualModuleId}";\n`;
-				if (sourcemaps) {
-					ms!.prepend(importCompat);
-				} else {
-					code = importCompat + code;
-				}
-			}
-
-			const preamble = preambles.reverse().join("\n") + "\n";
-			if (sourcemaps) {
-				ms!.prepend(preamble);
-
-				return {
-					code: ms!.toString(),
-					map: ms!.generateMap({ hires: true }),
-				};
-			} else {
-				code = preamble + code;
-
-				return {
-					code,
-				};
+			} catch (err) {
+				console.error(err);
 			}
 		},
 
