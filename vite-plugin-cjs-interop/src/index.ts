@@ -61,7 +61,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const { program: ast } = await oxc.parseAsync(code);
+			const { program: ast } = await oxc.parseAsync(id, code);
 
 			const toBeFixed: any[] = [];
 			const preambles: string[] = [];
@@ -77,9 +77,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						case "ImportExpression":
 							if (
 								node.source &&
-								// @ts-expect-error OXC uses StringLiteral and not Literal
-								node.source.type === "StringLiteral" &&
-								// @ts-expect-error OXC uses StringLiteral and not Literal
+								node.source.type === "Literal" &&
 								matchesDependencies(node.source.value as string)
 							) {
 								toBeFixed.push(node);
