@@ -4,6 +4,3 @@ packages:
 
 onlyBuiltDependencies:
     - esbuild
-
-overrides:
-    "@cyco130/eslint-config": link:../cyco130/eslint-config
