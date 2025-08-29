@@ -1,5 +1,9 @@
 packages:
     - vite-plugin-cjs-interop
     - tests/*
+
 onlyBuiltDependencies:
     - esbuild
+
+overrides:
+    "@cyco130/eslint-config": link:../cyco130/eslint-config
