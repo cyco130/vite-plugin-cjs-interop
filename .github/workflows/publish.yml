@@ -1,5 +1,9 @@
 name: Publish to NPM
 
+permissions:
+    id-token: write
+    contents: write
+
 on:
     workflow_dispatch:
         inputs:
@@ -54,7 +58,7 @@ jobs:
               run: "./version ${{ github.event.inputs.version }}"
 
             - name: "Publish to NPM"
-              run: pnpm -r publish --access public --no-git-checks --tag ${{ github.event.inputs.tag }}
+              run: pnpm -r publish --provenance --access public --no-git-checks --tag ${{ github.event.inputs.tag }}
 
             - name: "Commit version bump"
               if: ${{ github.event.inputs.commit == 'true' }}
