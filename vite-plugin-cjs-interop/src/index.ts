@@ -1,5 +1,5 @@
 import type { Plugin } from "vite";
-import oxc from "oxc-parser";
+import { parse } from "oxc-parser";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
 
@@ -61,7 +61,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			if (!client && !options?.ssr) return;
 			if (CSS_LANGS_RE.test(id)) return;
 
-			const { program: ast } = await oxc.parseAsync(id, code);
+			const { program: ast } = await parse(id, code);
 
 			const toBeFixed: any[] = [];
 			const preambles: string[] = [];
