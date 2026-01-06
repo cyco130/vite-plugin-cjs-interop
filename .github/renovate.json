@@ -12,7 +12,7 @@
 		},
 		{
 			"matchPackagePatterns": ["^@types/node$"],
-			"allowedVersions": "18"
+			"allowedVersions": "20"
 		}
 	],
 	"ignoreDeps": []

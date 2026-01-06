@@ -15,19 +15,19 @@ jobs:
         strategy:
             matrix:
                 os: [ubuntu-latest]
-                node_version: [22]
+                node_version: [24]
             fail-fast: false
         name: "CI tests on node-${{ matrix.node_version }}, ${{ matrix.os }}"
         steps:
             - name: Checkout
-              uses: actions/checkout@v5
+              uses: actions/checkout@v6
 
             - name: Install pnpm
               uses: pnpm/action-setup@v4
               with:
-                  version: 10.15.0
+                  version: 10
             - name: Set node version to ${{ matrix.node_version }}
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
                   node-version: ${{ matrix.node_version }}
                   cache: "pnpm"
