@@ -134,3 +134,27 @@ test("ignore css assets", async () => {
 
 	expect(output).toBeUndefined();
 });
+
+test("transforms multiple imports of the same package", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo", "bar"] });
+	const output = await (plugin.transform as any)!(
+		MULTIPLE_SAME_PACKAGE_INPUT,
+		"x.js",
+		{
+			ssr: true,
+		},
+	);
+	expect(output.code).toBe(MULTIPLE_SAME_PACKAGE_OUTPUT);
+});
+
+const MULTIPLE_SAME_PACKAGE_INPUT = `
+	import foo, { named, named2 as renamed } from "foo";
+	import * as Foo from "foo";
+`;
+
+const MULTIPLE_SAME_PACKAGE_OUTPUT = `const { default: foo = __cjsInterop2__, named, named2: renamed } = __cjsInterop2__?.default?.__esModule ? __cjsInterop2__.default : __cjsInterop2__;
+const Foo = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+
+	import __cjsInterop2__ from "foo";
+	import __cjsInterop1__ from "foo";
+`;

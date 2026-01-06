@@ -99,9 +99,9 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			const ms = sourcemaps ? new MagicString(code) : null;
 			let counter = 1;
 			let specifierCounter = 1;
-			let isNamespaceImport = false;
 
 			for (const node of bottomUpToBeFixed) {
+				let isNamespaceImport = false;
 				if (node.type === "ImportExpression") {
 					const insertion = ".then(__cjs_dyn_import__)";
 					if (sourcemaps) {
