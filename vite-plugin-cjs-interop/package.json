@@ -35,7 +35,7 @@
 	},
 	"devDependencies": {
 		"@cyco130/eslint-config": "^6.1.2",
-		"@types/node": "^20.19.32",
+		"@types/node": "^20.19.33",
 		"eslint": "^9.39.2",
 		"publint": "^0.3.17",
 		"tsup": "^8.5.1",
