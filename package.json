@@ -4,7 +4,7 @@
 	"scripts": {
 		"dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
 		"build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
-		"prepare": "husky install",
+		"prepare": "husky",
 		"precommit": "lint-staged",
 		"test": "pnpm run /^test:/",
 		"test:ci": "pnpm -r --stream run ci",
@@ -13,6 +13,7 @@
 		"format": "prettier --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml' --write"
 	},
 	"devDependencies": {
+		"eslint": "^10.0.2",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.3.1",
 		"prettier": "^3.8.1",
