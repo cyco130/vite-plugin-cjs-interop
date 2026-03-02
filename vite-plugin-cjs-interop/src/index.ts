@@ -107,10 +107,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					if (sourcemaps) {
 						ms!.appendRight(node.end, insertion);
 					} else {
-						code =
-							code.slice(0, node.end) +
-							insertion +
-							code.slice(node.end);
+						code = code.slice(0, node.end) + insertion + code.slice(node.end);
 					}
 					continue;
 				}
@@ -159,10 +156,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					)};`;
 					const replacementNamedExports = `export { ${exportDestructurings.join(", ")} };`;
 
-					const replacement = [
-						replacementNamedImports,
-						replacementNamedExports,
-					]
+					const replacement = [replacementNamedImports, replacementNamedExports]
 						.filter(Boolean)
 						.join("\n");
 
@@ -170,9 +164,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						ms.overwrite(node.start, node.end, replacement);
 					} else {
 						code =
-							code.slice(0, node.start) +
-							replacement +
-							code.slice(node.end);
+							code.slice(0, node.start) + replacement + code.slice(node.end);
 					}
 					continue;
 				}
@@ -184,9 +176,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				for (const specifier of node.specifiers || []) {
 					if (specifier.type === "ImportDefaultSpecifier") {
 						changed = true;
-						destructurings.push(
-							`default: ${specifier.local.name} = ${name}`,
-						);
+						destructurings.push(`default: ${specifier.local.name} = ${name}`);
 					} else if (specifier.type === "ImportSpecifier") {
 						changed = true;
 						if (specifier.imported.name === specifier.local.name) {
@@ -224,10 +214,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				if (sourcemaps) {
 					ms!.overwrite(node.start, node.end, replacement);
 				} else {
-					code =
-						code.slice(0, node.start) +
-						replacement +
-						code.slice(node.end);
+					code = code.slice(0, node.start) + replacement + code.slice(node.end);
 				}
 			}
 

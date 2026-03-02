@@ -1,22 +1,22 @@
 {
-	"name": "vite-plugin-cjs-interop-workspace-root",
-	"private": "true",
-	"scripts": {
-		"dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
-		"build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
-		"prepare": "husky",
-		"precommit": "lint-staged",
-		"test": "pnpm run /^test:/",
-		"test:ci": "pnpm -r --stream run ci",
-		"test:packages": "pnpm -r --stream run test",
-		"test:prettier": "prettier --check --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml'",
-		"format": "prettier --ignore-path .gitignore --ignore-unknown . '!pnpm-lock.yaml' --write"
-	},
-	"devDependencies": {
-		"eslint": "^10.0.2",
-		"husky": "^9.1.7",
-		"lint-staged": "^16.3.1",
-		"prettier": "^3.8.1",
-		"typescript": "^5.9.3"
-	}
+  "name": "vite-plugin-cjs-interop-workspace-root",
+  "private": "true",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter \"./vite-plugin-cjs-interop\" run dev",
+    "build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
+    "prepare": "husky",
+    "precommit": "lint-staged",
+    "format": "oxfmt",
+    "test": "pnpm run /^test:/",
+    "test:ci": "pnpm -r --stream run ci",
+    "test:packages": "pnpm -r --stream run test",
+    "test:format": "oxfmt --check"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "oxfmt": "^0.36.0",
+    "typescript": "^5.9.3"
+  }
 }

@@ -1,52 +1,52 @@
 {
-	"name": "vite-plugin-cjs-interop",
-	"version": "2.4.2",
-	"type": "module",
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"scripts": {
-		"build": "tsdown",
-		"dev": "tsdown --watch",
-		"prepack": "rm -rf dist && pnpm build",
-		"test": "pnpm run /^test:/",
-		"test:unit": "vitest run",
-		"test:typecheck": "tsc -p tsconfig.json --noEmit",
-		"test:lint": "eslint . --max-warnings 0 --ignore-pattern dist",
-		"test:package": "publint --strict"
-	},
-	"description": "Vite plugin to unwrap default imports from CJS dependencies during SSR",
-	"license": "MIT",
-	"repository": "github:cyco130/vite-plugin-cjs-interop",
-	"keywords": [
-		"vite-plugin",
-		"cjs",
-		"interop",
-		"ssr"
-	],
-	"peerDependencies": {
-		"vite": "4 || 5 || 6 || 7"
-	},
-	"devDependencies": {
-		"@cyco130/eslint-config": "^6.2.2",
-		"@types/node": "^20.19.35",
-		"eslint": "^10.0.2",
-		"publint": "^0.3.18",
-		"tsdown": "0.21.0-beta.2",
-		"typescript": "^5.9.3",
-		"vite": "^7.3.1",
-		"vitest": "^4.0.18"
-	},
-	"dependencies": {
-		"estree-walker": "^3.0.3",
-		"magic-string": "^0.30.21",
-		"minimatch": "^10.2.4",
-		"oxc-parser": "^0.116.0"
-	}
+  "name": "vite-plugin-cjs-interop",
+  "version": "2.4.2",
+  "description": "Vite plugin to unwrap default imports from CJS dependencies during SSR",
+  "keywords": [
+    "cjs",
+    "interop",
+    "ssr",
+    "vite-plugin"
+  ],
+  "license": "MIT",
+  "repository": "github:cyco130/vite-plugin-cjs-interop",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "prepack": "rm -rf dist && pnpm build",
+    "test": "pnpm run /^test:/",
+    "test:unit": "vitest run",
+    "test:typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:lint": "eslint . --max-warnings 0 --ignore-pattern dist",
+    "test:package": "publint --strict"
+  },
+  "dependencies": {
+    "estree-walker": "^3.0.3",
+    "magic-string": "^0.30.21",
+    "minimatch": "^10.2.4",
+    "oxc-parser": "^0.116.0"
+  },
+  "devDependencies": {
+    "@cyco130/eslint-config": "^6.2.2",
+    "@types/node": "^20.19.35",
+    "eslint": "^10.0.2",
+    "publint": "^0.3.18",
+    "tsdown": "0.21.0-beta.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  },
+  "peerDependencies": {
+    "vite": "4 || 5 || 6 || 7"
+  }
 }
