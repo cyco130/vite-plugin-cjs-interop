@@ -1,44 +1,44 @@
 name: CI tests
 
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
-    pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
 
 defaults:
-    run:
-        working-directory: .
+  run:
+    working-directory: .
 
 jobs:
-    test:
-        runs-on: ${{ matrix.os }}
-        strategy:
-            matrix:
-                os: [ubuntu-latest]
-                node_version: [24]
-            fail-fast: false
-        name: "CI tests on node-${{ matrix.node_version }}, ${{ matrix.os }}"
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v6
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node_version: [24]
+      fail-fast: false
+    name: "CI tests on node-${{ matrix.node_version }}, ${{ matrix.os }}"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
 
-            - name: Install pnpm
-              uses: pnpm/action-setup@v4
-              with:
-                  version: 10
-            - name: Set node version to ${{ matrix.node_version }}
-              uses: actions/setup-node@v6
-              with:
-                  node-version: ${{ matrix.node_version }}
-                  cache: "pnpm"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Set node version to ${{ matrix.node_version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: "pnpm"
 
-            - name: Install
-              run: pnpm install
+      - name: Install
+        run: pnpm install
 
-            - name: Build
-              run: pnpm run build
+      - name: Build
+        run: pnpm run build
 
-            - name: Run CI tests
-              run: pnpm test
+      - name: Run CI tests
+        run: pnpm test
