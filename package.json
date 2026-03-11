@@ -6,17 +6,17 @@
     "build": "pnpm -r --filter \"./vite-plugin-cjs-interop\" run build",
     "prepare": "husky",
     "precommit": "lint-staged",
-    "format": "oxfmt",
+    "format": "prettier . --ignore-unknown --write",
     "test": "pnpm run /^test:/",
     "test:ci": "pnpm -r --stream run ci",
     "test:packages": "pnpm -r --stream run test",
-    "test:format": "oxfmt --check"
+    "test:format": "prettier . --ignore-unknown --check"
   },
   "devDependencies": {
     "eslint": "^10.0.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.1",
-    "oxfmt": "^0.36.0",
+    "prettier": "^3.8.1",
     "typescript": "^5.9.3"
   }
 }

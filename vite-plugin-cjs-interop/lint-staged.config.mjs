@@ -4,5 +4,5 @@ export default {
 		"eslint --max-warnings 0 --ignore-pattern dist",
 		"vitest related --run",
 	],
-	"*": "oxfmt --no-error-on-unmatched-pattern",
+	"*": "prettier --ignore-unknown --write",
 };
