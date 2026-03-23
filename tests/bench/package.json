@@ -15,7 +15,7 @@
     "cjs-test-package": "workspace:*"
   },
   "devDependencies": {
-    "vite": "^7.3.1",
+    "vite": "^8.0.1",
     "vite-plugin-cjs-interop": "workspace:*"
   }
 }

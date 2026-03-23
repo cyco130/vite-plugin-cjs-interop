@@ -15,10 +15,7 @@
   ],
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+    ".": "./dist/index.js"
   },
   "scripts": {
     "build": "tsdown",
@@ -43,10 +40,10 @@
     "publint": "^0.3.18",
     "tsdown": "0.21.4",
     "typescript": "^5.9.3",
-    "vite": "^7.3.1",
+    "vite": "^8.0.1",
     "vitest": "^4.1.0"
   },
   "peerDependencies": {
-    "vite": "4 || 5 || 6 || 7"
+    "vite": "~6.4 || ~7.3 || 8"
   }
 }
