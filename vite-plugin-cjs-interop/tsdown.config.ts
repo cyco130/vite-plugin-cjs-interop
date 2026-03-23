@@ -4,7 +4,7 @@ export default defineConfig([
 	{
 		entry: ["./src/index.ts"],
 		fixedExtension: false,
-		format: ["esm", "cjs"],
+		format: ["esm"],
 		platform: "node",
 		target: "node20",
 		sourcemap: true,
