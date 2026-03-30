@@ -2,8 +2,7 @@ import type { Plugin } from "vite";
 import { parse } from "oxc-parser";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
-
-const walker = import("estree-walker");
+import { walk } from "estree-walker";
 
 export interface CjsInteropOptions {
 	/**
@@ -66,8 +65,6 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			const toBeFixed: any[] = [];
 			const preambles: string[] = [];
 			let hasDynamicImportsToFix = false;
-
-			const { walk } = await walker;
 
 			walk(ast as any, {
 				enter(node) {
