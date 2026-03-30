@@ -45,5 +45,8 @@
   },
   "peerDependencies": {
     "vite": "~6.4 || ~7.3 || 8"
+  },
+  "engines": {
+    "node": "20 || 22 || 24 || 25"
   }
 }
