@@ -1,12 +1,49 @@
 import { test, expect } from "vitest";
 import { cjsInterop } from ".";
+import type {} from "vite";
+
+async function callTransform(
+	plugin: ReturnType<typeof cjsInterop>,
+	code: string,
+	id = "x.js",
+): Promise<string> {
+	const tr = plugin.transform;
+	if (!tr) {
+		return code;
+	}
+
+	if (typeof tr === "function") {
+		throw new Error("Impossible");
+	}
+
+	const matches = (tr.filter!.code as RegExp[]).some((filter) =>
+		filter.test(code),
+	);
+
+	if (!matches) {
+		return code;
+	}
+
+	const result = await tr.handler.call(null as any, code, id, {
+		ssr: true,
+		moduleType: "js",
+	});
+
+	if (typeof result === "string") {
+		return result;
+	}
+
+	if (typeof result?.code === "object") {
+		return result.code.toString();
+	}
+
+	return result?.code ?? "";
+}
 
 test("transforms default import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
-	const output = await (plugin.transform as any)!(INPUT, "x.js", {
-		ssr: true,
-	});
-	expect(output.code).toBe(OUTPUT);
+	const output = await callTransform(plugin, INPUT, "x.js");
+	expect(output).toBe(OUTPUT);
 });
 
 const INPUT = `import foo, { named, named2 as renamed } from "foo";`;
@@ -16,10 +53,8 @@ import __cjsInterop1__ from "foo";`;
 
 test("transforms multiple imports", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo", "bar"] });
-	const output = await (plugin.transform as any)!(MULTIPLE_INPUT, "x.js", {
-		ssr: true,
-	});
-	expect(output.code).toBe(MULTIPLE_OUTPUT);
+	const output = await callTransform(plugin, MULTIPLE_INPUT, "x.js");
+	expect(output).toBe(MULTIPLE_OUTPUT);
 });
 
 const MULTIPLE_INPUT = `
@@ -37,9 +72,7 @@ const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cj
 test("Will skip dependencies specified with a negative glob", async () => {
 	const plugin = cjsInterop({ dependencies: ["!foo", "bar"] });
 
-	const output = await (plugin.transform as any)!(MULTIPLE_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await callTransform(plugin, MULTIPLE_INPUT, "x.js");
 
 	const EXPECTED_OUTPUT_WITHOUT_FOO = `const { default: bar = __cjsInterop1__, barNamed, barNamed2: barRenamed } = __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
 
@@ -47,15 +80,13 @@ test("Will skip dependencies specified with a negative glob", async () => {
 	import __cjsInterop1__ from "bar";
 `;
 
-	expect(output.code).toBe(EXPECTED_OUTPUT_WITHOUT_FOO);
+	expect(output).toBe(EXPECTED_OUTPUT_WITHOUT_FOO);
 });
 
 test("transforms namespace import", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
-	const output = await (plugin.transform as any)!(NAMESPACE_INPUT, "x.js", {
-		ssr: true,
-	});
-	expect(output.code).toBe(NAMESPACE_OUTPUT);
+	const output = await callTransform(plugin, NAMESPACE_INPUT, "x.js");
+	expect(output).toBe(NAMESPACE_OUTPUT);
 });
 
 const NAMESPACE_INPUT = `import * as foo from "foo";`;
@@ -65,10 +96,8 @@ import __cjsInterop1__ from "foo";`;
 
 test("supports globs in dependencies list", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo/*"] });
-	const output = await (plugin.transform as any)!(GLOB_INPUT, "x.js", {
-		ssr: true,
-	});
-	expect(output.code).toBe(GLOB_OUTPUT);
+	const output = await callTransform(plugin, GLOB_INPUT, "x.js");
+	expect(output).toBe(GLOB_OUTPUT);
 });
 
 const GLOB_INPUT = `
@@ -86,11 +115,9 @@ const { default: fooY = __cjsInterop1__, namedY, named2: renamedY } = __cjsInter
 test("supports dynamic imports", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
-	const output = await (plugin.transform as any)!(DYNAMIC_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await callTransform(plugin, DYNAMIC_INPUT, "x.js");
 
-	expect(output.code).toBe(DYNAMIC_OUTPUT);
+	expect(output).toBe(DYNAMIC_OUTPUT);
 });
 
 const DYNAMIC_INPUT = `
@@ -116,11 +143,9 @@ export { __cjsInteropSpecifier1__ as namedX, __cjsInteropSpecifier2__ as renamed
 
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
-	const output = await (plugin.transform as any)!(REEXPORT_INPUT, "x.js", {
-		ssr: true,
-	});
+	const output = await callTransform(plugin, REEXPORT_INPUT, "x.js");
 
-	expect(output.code).toBe(REEXPORT_OUTPUT);
+	expect(output).toBe(REEXPORT_OUTPUT);
 });
 
 const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
@@ -128,23 +153,19 @@ const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
 test("ignore css assets", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
-	const output = await (plugin.transform as any)!(CSS_INPUT, "x.css", {
-		ssr: true,
-	});
+	const output = await callTransform(plugin, CSS_INPUT, "x.css");
 
-	expect(output).toBeUndefined();
+	expect(output).toBe(CSS_INPUT);
 });
 
 test("transforms multiple imports of the same package", async () => {
 	const plugin = cjsInterop({ dependencies: ["foo", "bar"] });
-	const output = await (plugin.transform as any)!(
+	const output = await callTransform(
+		plugin,
 		MULTIPLE_SAME_PACKAGE_INPUT,
 		"x.js",
-		{
-			ssr: true,
-		},
 	);
-	expect(output.code).toBe(MULTIPLE_SAME_PACKAGE_OUTPUT);
+	expect(output).toBe(MULTIPLE_SAME_PACKAGE_OUTPUT);
 });
 
 const MULTIPLE_SAME_PACKAGE_INPUT = `
