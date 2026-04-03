@@ -7,15 +7,17 @@
     "build": "vite build",
     "build:cjs": "vite build --config vite.config.cts",
     "start": "node dist/index.js",
-    "ci": "pnpm ci:esm && pnpm ci:cjs",
+    "ci": "pnpm run /^ci:/",
     "ci:esm": "pnpm build && node dist/index.js",
-    "ci:cjs": "pnpm build:cjs && node dist/index.js"
+    "ci:cjs": "pnpm build:cjs && node dist/index.js",
+    "ci:client": "vitest run src/ci.test.ts"
   },
   "dependencies": {
-    "cjs-test-package": "workspace:*"
-  },
-  "devDependencies": {
+    "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
+    "kill-em-all": "^0.0.5",
+    "puppeteer": "^24.40.0",
     "vite": "^8.0.3",
-    "vite-plugin-cjs-interop": "workspace:*"
+    "vite-plugin-cjs-interop": "workspace:*",
+    "vitest": "^4.1.2"
   }
 }

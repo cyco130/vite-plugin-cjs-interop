@@ -68,6 +68,7 @@ web_modules/
 
 # Output of 'npm pack'
 *.tgz
+!/tests/cjs-test-package/cjs-test-package-0.0.0.tgz
 
 # Yarn Integrity file
 .yarn-integrity

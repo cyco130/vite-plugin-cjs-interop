@@ -4,3 +4,5 @@ packages:
 
 onlyBuiltDependencies:
   - esbuild
+  - puppeteer
+  - unrs-resolver

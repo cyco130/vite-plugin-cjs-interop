@@ -24,6 +24,13 @@ export interface CjsInteropOptions {
 	 * @default "both"
 	 */
 	apply?: "build" | "serve" | "both";
+
+	/**
+	 * Set to false for to workaround https://github.com/vitejs/vite/issues/22122.
+	 *
+	 * @default true
+	 */
+	trustViteWithHoisting?: boolean;
 }
 
 const CSS_LANGS_RE =
@@ -31,7 +38,11 @@ const CSS_LANGS_RE =
 
 export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const dependencies = Array.from(new Set(options.dependencies));
-	const { client = false, apply = "both" } = options;
+	const {
+		client = false,
+		apply = "both",
+		trustViteWithHoisting = true,
+	} = options;
 
 	let sourcemaps = false;
 
@@ -163,14 +174,19 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 								`${name} as ${defaultExportSpecifier.exported.name}}`,
 							);
 						}
-						preambles.push(
-							`const { ${importDestructurings.join(
-								", ",
-							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-						);
-						const replacementNamedImports = `import ${name} from ${JSON.stringify(
+						const destructuring = `const { ${importDestructurings.join(
+							", ",
+						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
+						let replacementNamedImports = `import ${name} from ${JSON.stringify(
 							node.source.value,
 						)};`;
+
+						if (trustViteWithHoisting) {
+							preambles.push(destructuring);
+						} else {
+							replacementNamedImports += destructuring;
+						}
+
 						const replacementNamedExports = `export { ${exportDestructurings.join(", ")} };`;
 
 						const replacement = [
@@ -216,20 +232,24 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					if (!changed) {
 						continue;
 					}
-					if (!isNamespaceImport)
-						preambles.push(
-							`const { ${destructurings.join(
-								", ",
-							)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-						);
-					else
-						preambles.push(
-							`const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`,
-						);
+					let destructuring: string;
+					if (!isNamespaceImport) {
+						destructuring = `const { ${destructurings.join(
+							", ",
+						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
+					} else {
+						destructuring = `const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
+					}
 
-					const replacement = `import ${name} from ${JSON.stringify(
+					let replacement = `import ${name} from ${JSON.stringify(
 						node.source.value,
 					)};`;
+
+					if (trustViteWithHoisting) {
+						preambles.push(destructuring);
+					} else {
+						replacement += "\n" + destructuring;
+					}
 
 					if (sourcemaps) {
 						ms!.overwrite(node.start, node.end, replacement);
