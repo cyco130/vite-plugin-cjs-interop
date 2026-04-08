@@ -28,6 +28,11 @@ export interface CjsInteropOptions {
 	/**
 	 * Set to false for to workaround https://github.com/vitejs/vite/issues/22122.
 	 *
+	 * @deprecated Vite 8.0.6 fixed the issue. The plugin will automatically
+	 * detect if the Vite version is affected and apply the workaround if
+	 * necessary. Providing it manually will still override the automatic
+	 * detection but is now unnecessary and will be removed in the near future.
+	 *
 	 * @default true
 	 */
 	trustViteWithHoisting?: boolean;
@@ -41,8 +46,11 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 	const {
 		client = false,
 		apply = "both",
-		trustViteWithHoisting = true,
+		// eslint-disable-next-line @typescript-eslint/no-deprecated
+		trustViteWithHoisting: trustViteWithHoistingOption,
 	} = options;
+
+	let trustViteWithHoisting = trustViteWithHoistingOption;
 
 	let sourcemaps = false;
 
@@ -80,6 +88,13 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 		configResolved(config) {
 			sourcemaps = !!config.build.sourcemap;
+
+			if (trustViteWithHoistingOption === undefined) {
+				const [major, minor, patch] = this.meta.viteVersion
+					.split(".")
+					.map(Number) as [number, number, number];
+				trustViteWithHoisting = !(major === 8 && minor === 0 && patch <= 5);
+			}
 		},
 
 		transform: {

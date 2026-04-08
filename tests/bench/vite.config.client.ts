@@ -9,7 +9,6 @@ export default defineConfig({
 	},
 	plugins: [
 		cjsInterop({
-			trustViteWithHoisting: false,
 			client: true,
 			dependencies: [
 				"cjs-test-package",
