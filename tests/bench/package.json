@@ -15,9 +15,9 @@
   "dependencies": {
     "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
     "kill-em-all": "^0.0.5",
-    "puppeteer": "^24.40.0",
-    "vite": "^8.0.8",
+    "puppeteer": "^24.42.0",
+    "vite": "^8.0.10",
     "vite-plugin-cjs-interop": "workspace:*",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.5"
   }
 }
