@@ -1,4 +1,4 @@
-import type { Plugin } from "vite";
+import { version as viteVersion, type Plugin } from "vite";
 import { parse } from "oxc-parser";
 import MagicString from "magic-string";
 import { minimatch } from "minimatch";
@@ -90,9 +90,11 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 			sourcemaps = !!config.build.sourcemap;
 
 			if (trustViteWithHoistingOption === undefined) {
-				const [major, minor, patch] = this.meta.viteVersion
-					.split(".")
-					.map(Number) as [number, number, number];
+				const [major, minor, patch] = viteVersion.split(".").map(Number) as [
+					number,
+					number,
+					number,
+				];
 				trustViteWithHoisting = !(major === 8 && minor === 0 && patch <= 5);
 			}
 		},
