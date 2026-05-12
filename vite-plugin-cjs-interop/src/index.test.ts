@@ -24,14 +24,11 @@ async function callTransform(
 		return code;
 	}
 
-	await (plugin.configResolved as any)?.call(
-		{ meta: { viteVersion: "8.0.6" } },
-		{
-			build: {
-				sourcemap: false,
-			},
-		} as any,
-	);
+	await (plugin.configResolved as any)?.call({}, {
+		build: {
+			sourcemap: false,
+		},
+	} as any);
 
 	const result = await tr.handler.call(null as any, code, id, {
 		ssr: true,
