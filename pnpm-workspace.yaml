@@ -2,7 +2,6 @@ packages:
   - vite-plugin-cjs-interop
   - tests/*
 
-onlyBuiltDependencies:
-  - esbuild
-  - puppeteer
-  - unrs-resolver
+allowBuilds:
+  puppeteer: true
+  unrs-resolver: true
