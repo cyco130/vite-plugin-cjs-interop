@@ -1,5 +1,9 @@
+strictPeerDependencies: false
+sideEffectsCache: false
+linkWorkspacePackages: true
+
 packages:
-  - vite-plugin-cjs-interop
+  - packages/*
   - tests/*
 
 allowBuilds:
