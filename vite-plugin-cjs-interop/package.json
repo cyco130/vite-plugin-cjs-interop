@@ -34,7 +34,7 @@
     "oxc-parser": "^0.125.0"
   },
   "devDependencies": {
-    "@cyco130/eslint-config": "^7.0.1",
+    "@cyco130/eslint-config": "^8.0.0",
     "@types/node": "^20.19.39",
     "eslint": "^10.2.0",
     "publint": "^0.3.18",
