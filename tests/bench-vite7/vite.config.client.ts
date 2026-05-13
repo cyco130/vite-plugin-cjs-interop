@@ -1,18 +1,15 @@
 import { defineConfig } from "vite";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 
-console.log("SSR version");
+console.log("Client version");
 
 export default defineConfig({
 	build: {
-		ssr: "src/index.js",
 		sourcemap: true,
-	},
-	ssr: {
-		external: ["cjs-test-package"],
 	},
 	plugins: [
 		cjsInterop({
+			client: true,
 			dependencies: [
 				"cjs-test-package",
 				"cjs-test-package/wrapped.cjs",
