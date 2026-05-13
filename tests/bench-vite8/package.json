@@ -19,5 +19,10 @@
     "vite": "8.0.12",
     "vite-plugin-cjs-interop": "workspace:*",
     "vitest": "^4.1.6"
+  },
+  "dependenciesMeta": {
+    "vite-plugin-cjs-interop": {
+      "injected": true
+    }
   }
 }

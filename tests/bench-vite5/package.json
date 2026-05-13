@@ -11,5 +11,10 @@
     "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
     "vite": "5.4.21",
     "vite-plugin-cjs-interop": "workspace:*"
+  },
+  "dependenciesMeta": {
+    "vite-plugin-cjs-interop": {
+      "injected": true
+    }
   }
 }
