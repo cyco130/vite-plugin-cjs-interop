@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
-    "kill-em-all": "^0.0.5",
-    "puppeteer": "^24.40.0",
-    "vite": "^8.0.8",
+    "kill-em-all": "^0.1.0",
+    "puppeteer": "^24.43.1",
+    "vite": "^8.0.12",
     "vite-plugin-cjs-interop": "workspace:*",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.6"
   }
 }
