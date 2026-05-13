@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { cjsInterop } from ".";
+import { cjsInterop } from "./index.ts";
 import type {} from "vite";
 
 async function callTransform(
