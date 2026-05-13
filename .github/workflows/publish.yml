@@ -58,7 +58,7 @@ jobs:
         run: "./version ${{ github.event.inputs.version }}"
 
       - name: "Publish to NPM"
-        run: pnpm -r publish --provenance --access public --no-git-checks --tag ${{ github.event.inputs.tag }}
+        run: pnpm -r publish --access public --no-git-checks --provenance --tag ${{ github.event.inputs.tag }}
 
       - name: "Commit version bump"
         if: ${{ github.event.inputs.commit == 'true' }}

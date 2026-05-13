@@ -1,4 +1,4 @@
-name: CI tests
+name: Code quality checks
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
         os: [ubuntu-latest]
         node_version: [24]
       fail-fast: false
-    name: "CI tests on node-${{ matrix.node_version }}, ${{ matrix.os }}"
+    name: "Code quality checks on node-${{ matrix.node_version }}, ${{ matrix.os }}"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,9 +42,5 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Disable AppArmor on Ubuntu
-        if: runner.os == 'Linux'
-        run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
-
-      - name: Run CI tests
-        run: pnpm run ci
+      - name: Run code quality checks and tests
+        run: pnpm run test
