@@ -15,8 +15,8 @@ Concrete pins live in `engines.node` ([packages/vite-plugin-cjs-interop/package.
 ## Layout
 
 - [packages/vite-plugin-cjs-interop/](packages/vite-plugin-cjs-interop/) — the published library.
-- [tests/bench/](tests/bench/) — internal end-to-end suite, run via `pnpm run ci`.
-- [tests/cjs-test-package/](tests/cjs-test-package/) — fixture CJS package consumed by the bench.
+- [tests/bench-vite5/](tests/bench-vite5/), [tests/bench-vite6/](tests/bench-vite6/), [tests/bench-vite7/](tests/bench-vite7/), [tests/bench-vite8/](tests/bench-vite8/) — one end-to-end bench per supported Vite major. Each exercises the plugin against a real Vite build/dev for both SSR and client modes (a 4-quadrant matrix per Vite version). Invoked via `pnpm run ci`.
+- [tests/cjs-test-package/](tests/cjs-test-package/) — fixture CJS package consumed by every bench.
 
 ## Common commands
 

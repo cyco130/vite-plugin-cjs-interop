@@ -21,10 +21,12 @@ const {
   default: foo = __cjsInterop1__,
   named,
   named2: renamed,
-} = __cjsInterop1__?.default?.__esModule
-  ? __cjsInterop1__.default
-  : __cjsInterop1__;
-import __cjsInterop1__ from "foo";
+} = __cjsInterop1__?.default?.default?.__esModule
+  ? __cjsInterop1__.default.default
+  : __cjsInterop1__?.default?.__esModule
+    ? __cjsInterop1__.default
+    : __cjsInterop1__;
+import * as __cjsInterop1__ from "foo";
 ```
 
 which takes care of unwrapping the default export and creating a synthetic default export if necessary.
