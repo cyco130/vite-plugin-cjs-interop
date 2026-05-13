@@ -17,6 +17,35 @@
 		{
 			"allowedVersions": "22",
 			"matchPackageNames": ["/^@types/node$/"]
+		},
+		{
+			"matchFileNames": ["tests/bench-vite5/package.json"],
+			"matchPackageNames": ["vite"],
+			"allowedVersions": "5",
+			"rangeStrategy": "pin"
+		},
+		{
+			"matchFileNames": ["tests/bench-vite6/package.json"],
+			"matchPackageNames": ["vite"],
+			"allowedVersions": "6",
+			"rangeStrategy": "pin"
+		},
+		{
+			"matchFileNames": ["tests/bench-vite7/package.json"],
+			"matchPackageNames": ["vite"],
+			"allowedVersions": "7",
+			"rangeStrategy": "pin"
+		},
+		{
+			"matchFileNames": ["tests/bench-vite8/package.json"],
+			"matchPackageNames": ["vite"],
+			"rangeStrategy": "pin"
+		},
+		{
+			"matchFileNames": ["tests/bench-vite5/package.json"],
+			"matchPackageNames": ["vitest"],
+			"allowedVersions": "3",
+			"rangeStrategy": "pin"
 		}
 	],
 	"ignoreDeps": []
