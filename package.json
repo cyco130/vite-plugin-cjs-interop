@@ -7,7 +7,7 @@
     "prepare": "husky",
     "precommit": "lint-staged",
     "format": "prettier --write .",
-    "ci": "pnpm -r --stream run ci",
+    "ci": "pnpm run build && pnpm ci && pnpm -r --stream run ci",
     "test": "pnpm run /^test:/",
     "test:packages": "pnpm -r --stream run test",
     "test:format": "prettier --check ."

@@ -21,10 +21,12 @@ const {
   default: foo = __cjsInterop1__,
   named,
   named2: renamed,
-} = __cjsInterop1__?.default?.__esModule
-  ? __cjsInterop1__.default
-  : __cjsInterop1__;
-import __cjsInterop1__ from "foo";
+} = __cjsInterop1__?.default?.default?.__esModule
+  ? __cjsInterop1__.default.default
+  : __cjsInterop1__?.default?.__esModule
+    ? __cjsInterop1__.default
+    : __cjsInterop1__;
+import * as __cjsInterop1__ from "foo";
 ```
 
 which takes care of unwrapping the default export and creating a synthetic default export if necessary.
@@ -74,6 +76,20 @@ export default {
 ```
 
 The matcher uses [minimatch](https://github.com/isaacs/minimatch) underneath, for more details on supported syntax.
+
+## Compatibility
+
+We currently test the plugin end-to-end (both SSR and client, in both `vite build` and `vite dev` modes) against the latest patch of:
+
+- **Vite** 5, 6, 7, and 8 — specifically the most recent release in the `~5`, `~6.4`, `~7.3`, and `8` ranges.
+- **Node** 22, 24, 25, and 26 on Linux; Node 24 on macOS and Windows.
+
+### Support policy
+
+- For **Vite**, we try to follow Vite's own support window: the latest major plus the latest minor of each of the two preceding majors.
+- For **Node**, we try to follow Node's own support window: latest patches of "LTS" and "current" releases.
+
+Note that we still test against Vite 5 but it's not an officially supported version. We'll try to keep testing against it as long as it doesn't require any special handling.
 
 ## License
 

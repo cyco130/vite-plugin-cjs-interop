@@ -7,5 +7,6 @@ packages:
   - tests/*
 
 allowBuilds:
+  esbuild: true
   puppeteer: true
   unrs-resolver: true

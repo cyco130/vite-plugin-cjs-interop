@@ -1,0 +1,25 @@
+{
+  "name": "vite-plugin-cjs-interop-bench-vite5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "ci": "pnpm run /^ci:/",
+    "ci:ssr-build": "pnpm build && node dist/index.js",
+    "ci:ssr-dev": "node ssr-dev.js",
+    "ci:client": "vitest run src/ci.test.ts"
+  },
+  "dependencies": {
+    "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
+    "kill-em-all": "^0.1.0",
+    "puppeteer": "^24.43.1",
+    "vite": "5.4.21",
+    "vite-plugin-cjs-interop": "workspace:*",
+    "vitest": "3.2.4"
+  },
+  "dependenciesMeta": {
+    "vite-plugin-cjs-interop": {
+      "injected": true
+    }
+  }
+}

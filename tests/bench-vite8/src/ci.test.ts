@@ -2,11 +2,14 @@ import puppeteer from "puppeteer";
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
 import { launchAndTest, type LaunchAndTestCleanupFunction } from "kill-em-all";
 
-const TEST_PORT = 3000;
+const TEST_PORT = 3008;
 const TEST_HOST = `http://localhost:${TEST_PORT}`;
 
 const browser = await puppeteer.launch({
 	headless: true,
+	// In CI we skip puppeteer's chrome download (see ci.yml) and use the
+	// runner's pre-installed Chrome.
+	...(process.env.CI ? { channel: "chrome" as const } : {}),
 	defaultViewport: { width: 1200, height: 800 },
 });
 

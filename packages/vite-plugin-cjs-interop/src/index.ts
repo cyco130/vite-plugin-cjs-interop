@@ -83,7 +83,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 	return {
 		name: "cjs-interop",
-		enforce: "post",
+		enforce: "pre",
 		apply: apply === "both" ? undefined : apply,
 
 		configResolved(config) {
@@ -95,7 +95,11 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					number,
 					number,
 				];
-				trustViteWithHoisting = !(major === 8 && minor === 0 && patch <= 5);
+				// The hoisting bug (vitejs/vite#22122) was present in vite < 8.0.6.
+				// Vite 8.0.6+ hoists imports such that our preamble destructuring
+				// can reference the import binding before it appears textually.
+				trustViteWithHoisting =
+					major > 8 || (major === 8 && (minor > 0 || patch >= 6));
 			}
 		},
 
@@ -191,10 +195,11 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 								`${name} as ${defaultExportSpecifier.exported.name}}`,
 							);
 						}
+						const unwrap = `${name}?.default?.default?.__esModule ? ${name}.default.default : ${name}?.default?.__esModule ? ${name}.default : ${name}`;
 						const destructuring = `const { ${importDestructurings.join(
 							", ",
-						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
-						let replacementNamedImports = `import ${name} from ${JSON.stringify(
+						)} } = ${unwrap};`;
+						let replacementNamedImports = `import * as ${name} from ${JSON.stringify(
 							node.source.value,
 						)};`;
 
@@ -249,16 +254,17 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 					if (!changed) {
 						continue;
 					}
+					const unwrap = `${name}?.default?.default?.__esModule ? ${name}.default.default : ${name}?.default?.__esModule ? ${name}.default : ${name}`;
 					let destructuring: string;
 					if (!isNamespaceImport) {
 						destructuring = `const { ${destructurings.join(
 							", ",
-						)} } = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
+						)} } = ${unwrap};`;
 					} else {
-						destructuring = `const ${destructurings[0]} = ${name}?.default?.__esModule ? ${name}.default : ${name};`;
+						destructuring = `const ${destructurings[0]} = ${unwrap};`;
 					}
 
-					let replacement = `import ${name} from ${JSON.stringify(
+					let replacement = `import * as ${name} from ${JSON.stringify(
 						node.source.value,
 					)};`;
 
