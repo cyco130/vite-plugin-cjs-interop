@@ -7,7 +7,7 @@
     "ci": "pnpm run /^ci:/",
     "ci:ssr-build": "pnpm build && node dist/index.js",
     "ci:ssr-dev": "node ssr-dev.js",
-    "ci:client": "TEST_PORT=3005 vitest run src/ci.test.ts"
+    "ci:client": "vitest run src/ci.test.ts"
   },
   "dependencies": {
     "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
