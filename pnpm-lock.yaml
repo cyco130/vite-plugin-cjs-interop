@@ -61,70 +61,41 @@ importers:
         specifier: ^4.1.6
         version: 4.1.6(@types/node@22.19.19)(vite@8.0.12(@types/node@22.19.19)(esbuild@0.27.7)(yaml@2.9.0))
 
-  tests/bench-shared: {}
-
   tests/bench-vite5:
     dependencies:
       cjs-test-package:
         specifier: file:../cjs-test-package/cjs-test-package-0.0.0.tgz
         version: file:tests/cjs-test-package/cjs-test-package-0.0.0.tgz
-      kill-em-all:
-        specifier: ^0.1.0
-        version: 0.1.0
-      puppeteer:
-        specifier: ^24.43.1
-        version: 24.43.1(typescript@6.0.3)
       vite:
         specifier: 5.4.21
         version: 5.4.21(@types/node@22.19.19)(lightningcss@1.32.0)
       vite-plugin-cjs-interop:
         specifier: workspace:*
         version: link:../../packages/vite-plugin-cjs-interop
-      vitest:
-        specifier: ^4.1.6
-        version: 4.1.6(@types/node@22.19.19)(vite@5.4.21(@types/node@22.19.19)(lightningcss@1.32.0))
 
   tests/bench-vite6:
     dependencies:
       cjs-test-package:
         specifier: file:../cjs-test-package/cjs-test-package-0.0.0.tgz
         version: file:tests/cjs-test-package/cjs-test-package-0.0.0.tgz
-      kill-em-all:
-        specifier: ^0.1.0
-        version: 0.1.0
-      puppeteer:
-        specifier: ^24.43.1
-        version: 24.43.1(typescript@6.0.3)
       vite:
         specifier: 6.4.2
         version: 6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
       vite-plugin-cjs-interop:
         specifier: workspace:*
         version: link:../../packages/vite-plugin-cjs-interop
-      vitest:
-        specifier: ^4.1.6
-        version: 4.1.6(@types/node@22.19.19)(vite@6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))
 
   tests/bench-vite7:
     dependencies:
       cjs-test-package:
         specifier: file:../cjs-test-package/cjs-test-package-0.0.0.tgz
         version: file:tests/cjs-test-package/cjs-test-package-0.0.0.tgz
-      kill-em-all:
-        specifier: ^0.1.0
-        version: 0.1.0
-      puppeteer:
-        specifier: ^24.43.1
-        version: 24.43.1(typescript@6.0.3)
       vite:
         specifier: 7.3.3
         version: 7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
       vite-plugin-cjs-interop:
         specifier: workspace:*
         version: link:../../packages/vite-plugin-cjs-interop
-      vitest:
-        specifier: ^4.1.6
-        version: 4.1.6(@types/node@22.19.19)(vite@7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))
 
   tests/bench-vite8:
     dependencies:
@@ -4199,30 +4170,6 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.6(vite@5.4.21(@types/node@22.19.19)(lightningcss@1.32.0))':
-    dependencies:
-      '@vitest/spy': 4.1.6
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 5.4.21(@types/node@22.19.19)(lightningcss@1.32.0)
-
-  '@vitest/mocker@4.1.6(vite@6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))':
-    dependencies:
-      '@vitest/spy': 4.1.6
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
-
-  '@vitest/mocker@4.1.6(vite@7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))':
-    dependencies:
-      '@vitest/spy': 4.1.6
-      estree-walker: 3.0.3
-      magic-string: 0.30.21
-    optionalDependencies:
-      vite: 7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
-
   '@vitest/mocker@4.1.6(vite@8.0.12(@types/node@22.19.19)(esbuild@0.27.7)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.6
@@ -6225,87 +6172,6 @@ snapshots:
       esbuild: 0.27.7
       fsevents: 2.3.3
       yaml: 2.9.0
-
-  vitest@4.1.6(@types/node@22.19.19)(vite@5.4.21(@types/node@22.19.19)(lightningcss@1.32.0)):
-    dependencies:
-      '@vitest/expect': 4.1.6
-      '@vitest/mocker': 4.1.6(vite@5.4.21(@types/node@22.19.19)(lightningcss@1.32.0))
-      '@vitest/pretty-format': 4.1.6
-      '@vitest/runner': 4.1.6
-      '@vitest/snapshot': 4.1.6
-      '@vitest/spy': 4.1.6
-      '@vitest/utils': 4.1.6
-      es-module-lexer: 2.0.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.4
-      std-env: 4.0.0
-      tinybench: 2.9.0
-      tinyexec: 1.1.2
-      tinyglobby: 0.2.16
-      tinyrainbow: 3.1.0
-      vite: 5.4.21(@types/node@22.19.19)(lightningcss@1.32.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.19.19
-    transitivePeerDependencies:
-      - msw
-
-  vitest@4.1.6(@types/node@22.19.19)(vite@6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)):
-    dependencies:
-      '@vitest/expect': 4.1.6
-      '@vitest/mocker': 4.1.6(vite@6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))
-      '@vitest/pretty-format': 4.1.6
-      '@vitest/runner': 4.1.6
-      '@vitest/snapshot': 4.1.6
-      '@vitest/spy': 4.1.6
-      '@vitest/utils': 4.1.6
-      es-module-lexer: 2.0.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.4
-      std-env: 4.0.0
-      tinybench: 2.9.0
-      tinyexec: 1.1.2
-      tinyglobby: 0.2.16
-      tinyrainbow: 3.1.0
-      vite: 6.4.2(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.19.19
-    transitivePeerDependencies:
-      - msw
-
-  vitest@4.1.6(@types/node@22.19.19)(vite@7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)):
-    dependencies:
-      '@vitest/expect': 4.1.6
-      '@vitest/mocker': 4.1.6(vite@7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0))
-      '@vitest/pretty-format': 4.1.6
-      '@vitest/runner': 4.1.6
-      '@vitest/snapshot': 4.1.6
-      '@vitest/spy': 4.1.6
-      '@vitest/utils': 4.1.6
-      es-module-lexer: 2.0.0
-      expect-type: 1.3.0
-      magic-string: 0.30.21
-      obug: 2.1.1
-      pathe: 2.0.3
-      picomatch: 4.0.4
-      std-env: 4.0.0
-      tinybench: 2.9.0
-      tinyexec: 1.1.2
-      tinyglobby: 0.2.16
-      tinyrainbow: 3.1.0
-      vite: 7.3.3(@types/node@22.19.19)(lightningcss@1.32.0)(yaml@2.9.0)
-      why-is-node-running: 2.3.0
-    optionalDependencies:
-      '@types/node': 22.19.19
-    transitivePeerDependencies:
-      - msw
 
   vitest@4.1.6(@types/node@22.19.19)(vite@8.0.12(@types/node@22.19.19)(esbuild@0.27.7)(yaml@2.9.0)):
     dependencies:
