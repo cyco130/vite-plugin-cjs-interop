@@ -1,8 +1,11 @@
+strictPeerDependencies: false
+sideEffectsCache: false
+linkWorkspacePackages: true
+
 packages:
-  - vite-plugin-cjs-interop
+  - packages/*
   - tests/*
 
-onlyBuiltDependencies:
-  - esbuild
-  - puppeteer
-  - unrs-resolver
+allowBuilds:
+  puppeteer: true
+  unrs-resolver: true
