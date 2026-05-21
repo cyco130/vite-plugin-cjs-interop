@@ -10,3 +10,7 @@ allowBuilds:
   esbuild: true
   puppeteer: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - "@cyco130/eslint-config"
+  - "kill-em-all"
