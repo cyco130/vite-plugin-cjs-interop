@@ -15,7 +15,7 @@
     "puppeteer": "^25.0.4",
     "vite": "6.4.2",
     "vite-plugin-cjs-interop": "workspace:*",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.7"
   },
   "dependenciesMeta": {
     "vite-plugin-cjs-interop": {
