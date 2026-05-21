@@ -133,3 +133,13 @@ dist
 # Packed packages
 *.tgz
 !/tests/cjs-test-package/cjs-test-package-0.0.0.tgz
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
