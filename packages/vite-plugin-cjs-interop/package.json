@@ -35,17 +35,17 @@
     "estree-walker": "^3.0.3",
     "magic-string": "^0.30.21",
     "minimatch": "^10.2.5",
-    "oxc-parser": "^0.130.0"
+    "oxc-parser": "^0.132.0"
   },
   "devDependencies": {
-    "@cyco130/eslint-config": "^9.0.0",
+    "@cyco130/eslint-config": "^9.0.1",
     "@types/node": "^22.19.19",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "publint": "^0.3.21",
     "tsdown": "0.22.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.12",
-    "vitest": "^4.1.6"
+    "vite": "^8.0.13",
+    "vitest": "^4.1.7"
   },
   "peerDependencies": {
     "vite": "~6.4 || ~7.3 || 8"
