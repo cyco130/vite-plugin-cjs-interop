@@ -35,16 +35,16 @@
     "estree-walker": "^3.0.3",
     "magic-string": "^0.30.21",
     "minimatch": "^10.2.5",
-    "oxc-parser": "^0.132.0"
+    "oxc-parser": "^0.133.0"
   },
   "devDependencies": {
     "@cyco130/eslint-config": "^9.0.1",
     "@types/node": "^22.19.19",
-    "eslint": "^10.4.0",
+    "eslint": "^10.4.1",
     "publint": "^0.3.21",
-    "tsdown": "0.22.0",
+    "tsdown": "0.22.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.14",
+    "vite": "^8.0.15",
     "vitest": "^4.1.7"
   },
   "peerDependencies": {
