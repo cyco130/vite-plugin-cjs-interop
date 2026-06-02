@@ -12,7 +12,7 @@
   "dependencies": {
     "cjs-test-package": "file:../cjs-test-package/cjs-test-package-0.0.0.tgz",
     "kill-em-all": "^0.1.0",
-    "puppeteer": "^25.0.4",
+    "puppeteer": "^25.1.0",
     "vite": "6.4.2",
     "vite-plugin-cjs-interop": "workspace:*",
     "vitest": "^4.1.7"
