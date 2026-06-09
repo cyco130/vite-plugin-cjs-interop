@@ -10,6 +10,10 @@
   ],
   "license": "MIT",
   "repository": "github:cyco130/vite-plugin-cjs-interop",
+  "homepage": "https://github.com/cyco130/vite-plugin-cjs-interop#readme",
+  "bugs": {
+    "url": "https://github.com/cyco130/vite-plugin-cjs-interop/issues"
+  },
   "files": [
     "dist"
   ],
