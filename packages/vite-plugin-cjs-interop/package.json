@@ -39,12 +39,12 @@
     "estree-walker": "^3.0.3",
     "magic-string": "^0.30.21",
     "minimatch": "^10.2.5",
-    "oxc-parser": "^0.134.0"
+    "oxc-parser": "^0.135.0"
   },
   "devDependencies": {
     "@cyco130/eslint-config": "^9.0.2",
-    "@types/node": "^22.19.20",
-    "eslint": "^10.4.1",
+    "@types/node": "^22.19.21",
+    "eslint": "^10.5.0",
     "publint": "^0.3.21",
     "tsdown": "0.22.2",
     "typescript": "^6.0.3",
