@@ -38,18 +38,18 @@
   "dependencies": {
     "estree-walker": "^3.0.3",
     "magic-string": "^0.30.21",
-    "minimatch": "^10.2.5",
-    "oxc-parser": "^0.134.0"
+    "minimatch": "^10.2.6",
+    "oxc-parser": "^0.149.0"
   },
   "devDependencies": {
     "@cyco130/eslint-config": "^9.0.2",
-    "@types/node": "^22.19.20",
-    "eslint": "^10.4.1",
-    "publint": "^0.3.21",
-    "tsdown": "0.22.2",
+    "@types/node": "^22.20.2",
+    "eslint": "^10.10.0",
+    "publint": "^0.3.24",
+    "tsdown": "0.23.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.16",
-    "vitest": "^4.1.8"
+    "vite": "^8.3.0",
+    "vitest": "^4.1.11"
   },
   "peerDependencies": {
     "vite": "~6.4 || ~7.3 || 8"
