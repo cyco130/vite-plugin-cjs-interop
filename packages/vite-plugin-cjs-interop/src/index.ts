@@ -150,7 +150,6 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 				let specifierCounter = 1;
 
 				for (const node of bottomUpToBeFixed) {
-					let isNamespaceImport = false;
 					if (node.type === "ImportExpression") {
 						const insertion = ".then(__cjs_dyn_import__)";
 						if (sourcemaps) {
@@ -166,11 +165,11 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						const exportDestructurings = [];
 						const name = `__cjsInterop${counter++}__`;
 						let changed = false;
-						let defaultExportSpecifier = null;
+						const defaultExportSpecifiers = [];
 						for (const specifier of node.specifiers) {
 							if (specifier.type === "ExportSpecifier") {
 								if (specifier.local.name === "default") {
-									defaultExportSpecifier = specifier;
+									defaultExportSpecifiers.push(specifier);
 									continue;
 								}
 								changed = true;
@@ -190,9 +189,13 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						if (!changed) {
 							continue;
 						}
-						if (defaultExportSpecifier) {
+						for (const specifier of defaultExportSpecifiers) {
+							// Same fallback as a default import: use the namespace
+							// itself when the unwrapped module has no default.
+							const specifierName = `__cjsInteropSpecifier${specifierCounter++}__`;
+							importDestructurings.push(`default: ${specifierName} = ${name}`);
 							exportDestructurings.push(
-								`${name} as ${defaultExportSpecifier.exported.name}}`,
+								`${specifierName} as ${specifier.exported.name}`,
 							);
 						}
 						const unwrap = `${name}?.default?.default?.__esModule ? ${name}.default.default : ${name}?.default?.__esModule ? ${name}.default : ${name}`;
@@ -229,6 +232,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 
 					const destructurings: string[] = [];
 					const name = `__cjsInterop${counter++}__`;
+					let namespaceName: string | undefined;
 					let changed = false;
 
 					for (const specifier of node.specifiers || []) {
@@ -246,8 +250,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 							}
 						} else if (specifier.type === "ImportNamespaceSpecifier") {
 							changed = true;
-							isNamespaceImport = true;
-							destructurings.push(specifier.local.name);
+							namespaceName = specifier.local.name;
 						}
 					}
 
@@ -255,14 +258,17 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						continue;
 					}
 					const unwrap = `${name}?.default?.default?.__esModule ? ${name}.default.default : ${name}?.default?.__esModule ? ${name}.default : ${name}`;
-					let destructuring: string;
-					if (!isNamespaceImport) {
-						destructuring = `const { ${destructurings.join(
-							", ",
-						)} } = ${unwrap};`;
-					} else {
-						destructuring = `const ${destructurings[0]} = ${unwrap};`;
+					const declarations: string[] = [];
+					if (namespaceName) {
+						declarations.push(`const ${namespaceName} = ${unwrap};`);
 					}
+					if (destructurings.length > 0) {
+						// `import X, * as ns` destructures the default from `ns`
+						declarations.push(
+							`const { ${destructurings.join(", ")} } = ${namespaceName ?? unwrap};`,
+						);
+					}
+					const destructuring = declarations.join("\n");
 
 					let replacement = `import * as ${name} from ${JSON.stringify(
 						node.source.value,

@@ -1,6 +1,11 @@
 import { test, expect } from "vitest";
+import { parseSync } from "oxc-parser";
 import { cjsInterop } from "./index.ts";
 import type {} from "vite";
+
+function expectValidModule(code: string) {
+	expect(parseSync("x.js", code).errors).toEqual([]);
+}
 
 async function callTransform(
 	plugin: ReturnType<typeof cjsInterop>,
@@ -143,15 +148,77 @@ import { __cjs_dyn_import__ } from "virtual:cjs-dyn-import";
 test("transforms re-export", async () => {
 	const REEXPORT_INPUT = `export { namedX, named2 as renamedX, default } from "foo";`;
 
-	const REEXPORT_OUTPUT = `const { namedX: __cjsInteropSpecifier1__, named2: __cjsInteropSpecifier2__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+	const REEXPORT_OUTPUT = `const { namedX: __cjsInteropSpecifier1__, named2: __cjsInteropSpecifier2__, default: __cjsInteropSpecifier3__ = __cjsInterop1__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
 import * as __cjsInterop1__ from "foo";
-export { __cjsInteropSpecifier1__ as namedX, __cjsInteropSpecifier2__ as renamedX, __cjsInterop1__ as default} };`;
+export { __cjsInteropSpecifier1__ as namedX, __cjsInteropSpecifier2__ as renamedX, __cjsInteropSpecifier3__ as default };`;
 
 	const plugin = cjsInterop({ dependencies: ["foo"] });
 
 	const output = await callTransform(plugin, REEXPORT_INPUT, "x.js");
 
 	expect(output).toBe(REEXPORT_OUTPUT);
+	expectValidModule(output);
+});
+
+const DEFAULT_REEXPORT_INPUT = `export { default as Lib, helper } from "foo";`;
+
+test("transforms renamed default re-export", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+	const output = await callTransform(plugin, DEFAULT_REEXPORT_INPUT, "x.js");
+
+	expect(output)
+		.toBe(`const { helper: __cjsInteropSpecifier1__, default: __cjsInteropSpecifier2__ = __cjsInterop1__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+import * as __cjsInterop1__ from "foo";
+export { __cjsInteropSpecifier1__ as helper, __cjsInteropSpecifier2__ as Lib };`);
+	expectValidModule(output);
+});
+
+test("transforms renamed default re-export without hoisting", async () => {
+	const plugin = cjsInterop({
+		dependencies: ["foo"],
+		trustViteWithHoisting: false,
+	});
+	const output = await callTransform(plugin, DEFAULT_REEXPORT_INPUT, "x.js");
+
+	expect(output).toBe(`
+import * as __cjsInterop1__ from "foo";const { helper: __cjsInteropSpecifier1__, default: __cjsInteropSpecifier2__ = __cjsInterop1__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+export { __cjsInteropSpecifier1__ as helper, __cjsInteropSpecifier2__ as Lib };`);
+	expectValidModule(output);
+});
+
+const DEFAULT_AND_NAMESPACE_INPUT = `import foo, * as Foo from "foo";`;
+
+test("transforms default and namespace import", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+	const output = await callTransform(
+		plugin,
+		DEFAULT_AND_NAMESPACE_INPUT,
+		"x.js",
+	);
+
+	expect(output)
+		.toBe(`const Foo = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+const { default: foo = __cjsInterop1__ } = Foo;
+import * as __cjsInterop1__ from "foo";`);
+	expectValidModule(output);
+});
+
+test("transforms default and namespace import without hoisting", async () => {
+	const plugin = cjsInterop({
+		dependencies: ["foo"],
+		trustViteWithHoisting: false,
+	});
+	const output = await callTransform(
+		plugin,
+		DEFAULT_AND_NAMESPACE_INPUT,
+		"x.js",
+	);
+
+	expect(output).toBe(`
+import * as __cjsInterop1__ from "foo";
+const Foo = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+const { default: foo = __cjsInterop1__ } = Foo;`);
+	expectValidModule(output);
 });
 
 const CSS_INPUT = `:root{--mantine-font-family: Open Sans, sans-serif;`;
