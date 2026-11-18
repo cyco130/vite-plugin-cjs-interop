@@ -32,7 +32,7 @@ const testCases: TestCase[] = [
 	},
 ];
 
-describe.sequential.each(testCases)("$name", ({ name, command }) => {
+describe.each(testCases)("$name", ({ name, command }) => {
 	let kill: LaunchAndTestCleanupFunction | undefined;
 
 	beforeAll(async () => {

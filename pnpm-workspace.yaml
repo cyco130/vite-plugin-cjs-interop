@@ -14,3 +14,7 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - "@cyco130/eslint-config"
   - "kill-em-all"
+
+permissions:
+  tsdown:
+    skills: false
