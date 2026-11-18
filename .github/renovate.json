@@ -20,6 +20,10 @@
 			"enabled": false
 		},
 		{
+			"allowedVersions": "<7",
+			"matchPackageNames": ["typescript"]
+		},
+		{
 			"allowedVersions": "22",
 			"matchPackageNames": ["/^@types/node$/"]
 		},
