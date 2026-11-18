@@ -237,8 +237,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       puppeteer:
-        specifier: ^25.17.0
-        version: 25.17.0
+        specifier: ^25.18.0
+        version: 25.18.0
       vite:
         specifier: 5.4.21
         version: 5.4.21(@types/node@22.20.5)(lightningcss@1.33.0)
@@ -261,8 +261,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       puppeteer:
-        specifier: ^25.17.0
-        version: 25.17.0
+        specifier: ^25.18.0
+        version: 25.18.0
       vite:
         specifier: 6.4.6
         version: 6.4.6(@types/node@22.20.5)(lightningcss@1.33.0)(yaml@2.9.1)
@@ -285,8 +285,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       puppeteer:
-        specifier: ^25.17.0
-        version: 25.17.0
+        specifier: ^25.18.0
+        version: 25.18.0
       vite:
         specifier: 7.3.8
         version: 7.3.8(@types/node@22.20.5)(lightningcss@1.33.0)(yaml@2.9.1)
@@ -309,8 +309,8 @@ importers:
         specifier: ^0.2.0
         version: 0.2.0
       puppeteer:
-        specifier: ^25.17.0
-        version: 25.17.0
+        specifier: ^25.18.0
+        version: 25.18.0
       vite:
         specifier: 8.3.8
         version: 8.3.8(@types/node@22.20.5)(esbuild@0.27.7)(yaml@2.9.1)
@@ -2764,12 +2764,12 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@25.17.0:
-    resolution: {integrity: sha512-YAgBitkd+K9gxRt+wzBAFTTkGjkC8aC2o4OxofsU8JUy2nnK/RflTCJ9bRCvCMNbq9TPhqFk4Phz98otN9FrGg==}
+  puppeteer-core@25.18.0:
+    resolution: {integrity: sha512-+pArr1WBEqbU3GhBuNJAHDPvEHp7q0e4zBrmM/SgIMSQeXMSJ59KFpdwsf8tnD8jEYyhgP5o62ssBCMrYPADUg==}
     engines: {node: '>=22.12.0'}
 
-  puppeteer@25.17.0:
-    resolution: {integrity: sha512-J+OQNlI7I6ZjHhF6Q8M+LgiUGldF7meer5EqMJBZMHgnFN3zcehOhpz/x0bYDEEvbEiXzKzmqSRP3QT+5accjQ==}
+  puppeteer@25.18.0:
+    resolution: {integrity: sha512-rBJUF/0ucVjhPtPdrsBaIs1FRvOiQM/m71OBnMBl0Hw7e1GVxEQBeqiZsSqpD0mkaAhCDY+O5/qyW6rpIDW+XQ==}
     engines: {node: '>=22.12.0'}
     hasBin: true
 
@@ -5640,7 +5640,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@25.17.0:
+  puppeteer-core@25.18.0:
     dependencies:
       '@puppeteer/browsers': 3.2.7
       chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1717327)
@@ -5654,13 +5654,13 @@ snapshots:
       - utf-8-validate
       - yauzl
 
-  puppeteer@25.17.0:
+  puppeteer@25.18.0:
     dependencies:
       '@puppeteer/browsers': 3.2.7
       chromium-bidi: 157.0.8090-0(devtools-protocol@0.0.1717327)
       devtools-protocol: 0.0.1717327
       lilconfig: 3.1.5
-      puppeteer-core: 25.17.0
+      puppeteer-core: 25.18.0
       typed-query-selector: 2.12.4
     transitivePeerDependencies:
       - bufferutil
