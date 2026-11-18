@@ -1,9 +1,32 @@
 import puppeteer from "puppeteer";
 import { describe, it, expect, afterAll, beforeAll } from "vitest";
+import { createServer } from "node:net";
 import { launchAndTest, type LaunchAndTestCleanupFunction } from "kill-em-all";
 
 const TEST_PORT = 3008;
 const TEST_HOST = `http://localhost:${TEST_PORT}`;
+
+// Starting the server and waiting for it to respond can take close to vitest's
+// default 10 s hook timeout on Windows CI runners. LAUNCH_TIMEOUT is shorter
+// than HOOK_TIMEOUT so that launchAndTest gives up first and kills the server
+// it spawned, instead of the hook timing out and leaving it running.
+const LAUNCH_TIMEOUT = 45_000;
+const HOOK_TIMEOUT = 60_000;
+
+// Fails if something is already listening on the test port. Without this, a
+// leftover server from an earlier case would answer the readiness check and
+// the page load, and the test would pass without testing the right server.
+function assertPortIsFree(port: number): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const server = createServer();
+		server.once("error", (error) => {
+			reject(new Error(`Port ${port} is not free`, { cause: error }));
+		});
+		server.listen(port, "localhost", () => {
+			server.close(() => resolve());
+		});
+	});
+}
 
 const browser = await puppeteer.launch({
 	headless: true,
@@ -36,9 +59,9 @@ describe.each(testCases)("$name", ({ name, command }) => {
 	let kill: LaunchAndTestCleanupFunction | undefined;
 
 	beforeAll(async () => {
-		await kill?.();
-		kill = await launchAndTest(command, TEST_HOST);
-	});
+		await assertPortIsFree(TEST_PORT);
+		kill = await launchAndTest(command, TEST_HOST, LAUNCH_TIMEOUT);
+	}, HOOK_TIMEOUT);
 
 	afterAll(async () => {
 		await kill?.();
