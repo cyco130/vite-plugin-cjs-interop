@@ -176,6 +176,7 @@ export { __cjsInteropSpecifier1__ as helper, __cjsInteropSpecifier2__ as Lib };`
 test("transforms renamed default re-export without hoisting", async () => {
 	const plugin = cjsInterop({
 		dependencies: ["foo"],
+		// eslint-disable-next-line @typescript-eslint/no-deprecated -- testing the manual override
 		trustViteWithHoisting: false,
 	});
 	const output = await callTransform(plugin, DEFAULT_REEXPORT_INPUT, "x.js");
@@ -206,6 +207,7 @@ import * as __cjsInterop1__ from "foo";`);
 test("transforms default and namespace import without hoisting", async () => {
 	const plugin = cjsInterop({
 		dependencies: ["foo"],
+		// eslint-disable-next-line @typescript-eslint/no-deprecated -- testing the manual override
 		trustViteWithHoisting: false,
 	});
 	const output = await callTransform(
