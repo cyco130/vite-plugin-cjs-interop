@@ -187,6 +187,39 @@ export { __cjsInteropSpecifier1__ as helper, __cjsInteropSpecifier2__ as Lib };`
 	expectValidModule(output);
 });
 
+test("transforms default-only re-export", async () => {
+	const plugin = cjsInterop({ dependencies: ["foo"] });
+	const output = await callTransform(
+		plugin,
+		`export { default } from "foo";`,
+		"x.js",
+	);
+
+	expect(output)
+		.toBe(`const { default: __cjsInteropSpecifier1__ = __cjsInterop1__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+import * as __cjsInterop1__ from "foo";
+export { __cjsInteropSpecifier1__ as default };`);
+	expectValidModule(output);
+});
+
+test("transforms renamed default-only re-export without hoisting", async () => {
+	const plugin = cjsInterop({
+		dependencies: ["foo"],
+		// eslint-disable-next-line @typescript-eslint/no-deprecated -- testing the manual override
+		trustViteWithHoisting: false,
+	});
+	const output = await callTransform(
+		plugin,
+		`export { default as Lib } from "foo";`,
+		"x.js",
+	);
+
+	expect(output).toBe(`
+import * as __cjsInterop1__ from "foo";const { default: __cjsInteropSpecifier1__ = __cjsInterop1__ } = __cjsInterop1__?.default?.default?.__esModule ? __cjsInterop1__.default.default : __cjsInterop1__?.default?.__esModule ? __cjsInterop1__.default : __cjsInterop1__;
+export { __cjsInteropSpecifier1__ as Lib };`);
+	expectValidModule(output);
+});
+
 const DEFAULT_AND_NAMESPACE_INPUT = `import foo, * as Foo from "foo";`;
 
 test("transforms default and namespace import", async () => {

@@ -164,7 +164,6 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 						const importDestructurings = [];
 						const exportDestructurings = [];
 						const name = `__cjsInterop${counter++}__`;
-						let changed = false;
 						const defaultExportSpecifiers = [];
 						for (const specifier of node.specifiers) {
 							if (specifier.type === "ExportSpecifier") {
@@ -172,7 +171,6 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 									defaultExportSpecifiers.push(specifier);
 									continue;
 								}
-								changed = true;
 								const specifierName = `__cjsInteropSpecifier${specifierCounter++}__`;
 								importDestructurings.push(
 									`${specifier.local.name}: ${specifierName}`,
@@ -186,7 +184,7 @@ export function cjsInterop(options: CjsInteropOptions): Plugin {
 								);
 							}
 						}
-						if (!changed) {
+						if (node.specifiers.length === 0) {
 							continue;
 						}
 						for (const specifier of defaultExportSpecifiers) {
